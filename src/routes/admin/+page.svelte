@@ -22,24 +22,34 @@
 
 	let { data }: { data: PageData } = $props();
 
+	const plural = (count: number, singular: string, pluralForm = `${singular}s`) =>
+		`${count} ${count === 1 ? singular : pluralForm}`;
+
 	// Every figure comes from the loaded summary, so each row matches the list it opens.
 	let attention = $derived.by<AttentionItem[]>(() => {
 		const items: AttentionItem[] = [
 			{
 				icon: ShoppingBagIcon,
-				text: `${data.summary.newOrders} new orders need confirmation`,
+				text: `${plural(data.summary.newOrders, 'new order')} ${
+					data.summary.newOrders === 1 ? 'needs' : 'need'
+				} confirmation`,
 				href: resolve('/admin/orders?status=new'),
 				tone: 'gold'
 			},
 			{
 				icon: ClockIcon,
-				text: `${data.summary.preordersAwaitingSupplier} pre-orders awaiting supplier updates`,
+				text: `${plural(
+					data.summary.preordersAwaitingSupplier,
+					'pre-order'
+				)} awaiting supplier updates`,
 				href: resolve('/admin/orders?type=preorder'),
 				tone: 'amber'
 			},
 			{
 				icon: PackageIcon,
-				text: `${data.summary.lowStock} products are low in stock`,
+				text: `${plural(data.summary.lowStock, 'product')} ${
+					data.summary.lowStock === 1 ? 'is' : 'are'
+				} low in stock`,
 				href: resolve('/admin/products?stock=low_stock'),
 				tone: 'red'
 			}

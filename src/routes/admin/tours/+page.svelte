@@ -1,0 +1,72 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+	import PageHeader from '$lib/components/layout/PageHeader.svelte';
+	import TourCard from '$lib/components/tours/TourCard.svelte';
+	import TourFormFields from '$lib/components/tours/TourFormFields.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import * as Sheet from '$lib/components/ui/sheet';
+	import { tourSchema } from '$lib/schemas';
+	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
+
+	let { data }: { data: PageData } = $props();
+
+	let createOpen = $state(false);
+
+	const form = superForm(
+		untrack(() => data.createForm),
+		{
+			validators: zod4Client(tourSchema),
+			dataType: 'json',
+			onUpdated: ({ form: result }) => {
+				if (result.valid && result.message) {
+					toast.success(result.message);
+					createOpen = false;
+				}
+			}
+		}
+	);
+	const { enhance, submitting } = form;
+</script>
+
+<svelte:head>
+	<title>Tours — YAS Outlet Admin</title>
+</svelte:head>
+
+<PageHeader
+	title="Tours"
+	count="{data.tours.length} tours"
+	description="Plan and manage scheduled shopping trips where customers request products."
+>
+	{#snippet actions()}
+		<Button onclick={() => (createOpen = true)}>
+			<PlusIcon class="h-4 w-4" aria-hidden="true" />
+			Create Tour
+		</Button>
+	{/snippet}
+</PageHeader>
+
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+	{#each data.tours as tour (tour.id)}
+		<TourCard {tour} />
+	{/each}
+</div>
+
+<Sheet.Root bind:open={createOpen}>
+	<Sheet.Content title="Create Tour" description="Set up a new shopping trip.">
+		<form id="create-tour-form" method="POST" action="?/createTour" use:enhance>
+			<TourFormFields {form} />
+		</form>
+		{#snippet footer()}
+			<div class="flex justify-end gap-3">
+				<Button variant="secondary" onclick={() => (createOpen = false)}>Cancel</Button>
+				<Button type="submit" form="create-tour-form" disabled={$submitting}>
+					{$submitting ? 'Creating…' : 'Create Tour'}
+				</Button>
+			</div>
+		{/snippet}
+	</Sheet.Content>
+</Sheet.Root>

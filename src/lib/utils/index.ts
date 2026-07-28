@@ -13,4 +13,5 @@ export {
 	tourStatusMap,
 	visibilityMap
 } from './labels';
+export { applyParams } from './navigate';
 export { activeFilterCount, param, withParams } from './url-state';

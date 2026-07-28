@@ -15,9 +15,12 @@ export function getNotifications(): HeaderNotification[] {
 	const lowStock = products.find((product) => product.stockStatus === 'low_stock');
 	const tour = getUpcomingTour();
 
-	const items: HeaderNotification[] = [
-		{ title: `${summary.newOrders} new orders need confirmation`, time: '10 min ago' }
-	];
+	const newOrders =
+		summary.newOrders === 1
+			? '1 new order needs confirmation'
+			: `${summary.newOrders} new orders need confirmation`;
+
+	const items: HeaderNotification[] = [{ title: newOrders, time: '10 min ago' }];
 
 	if (lowStock) {
 		items.push({ title: `${lowStock.name} is low in stock`, time: '1 hr ago' });

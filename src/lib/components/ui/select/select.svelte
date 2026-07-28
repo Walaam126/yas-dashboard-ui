@@ -20,11 +20,7 @@
 -->
 <select
 	bind:value
-	class={cn(controlBase, 'h-10 appearance-none bg-no-repeat pr-8', className)}
-	style:background-image="url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
-	width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A7A6B'
-	stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E&quot;)"
-	style:background-position="right 0.6rem center"
+	class={cn(controlBase, 'select-chevron h-10 appearance-none pr-8', className)}
 	{...rest}
 >
 	{@render children()}
