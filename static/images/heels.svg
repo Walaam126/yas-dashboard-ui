@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Nude leather pump">
+	<defs>
+		<linearGradient id="hlsBg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#FDFBF7" />
+			<stop offset="100%" stop-color="#F3ECE0" />
+		</linearGradient>
+	</defs>
+	<rect width="800" height="800" fill="url(#hlsBg)" />
+	<g transform="translate(400 420)">
+		<path
+			d="M-250 130 q-12 -74 56 -104 l120 -52 q52 -22 92 -70 l86 -104 q20 -24 48 -10 q26 14 20 44 l-40 208 q-8 42 24 66 l40 30 q30 22 22 58 q-8 34 -46 34 h-390 q-30 0 -32 -100 z"
+			fill="#E8DAC4"
+			stroke="#C4AC88"
+			stroke-width="10"
+			stroke-linejoin="round"
+		/>
+		<path d="M212 132 l22 132 q4 26 -22 26 h-26 q-24 0 -20 -26 l22 -132 z" fill="#C4AC88" stroke="#98763E" stroke-width="8" />
+		<path d="M-262 158 h414 q20 0 20 22 t-20 22 h-414 q-20 0 -20 -22 t20 -22 z" fill="#FFFDF9" stroke="#C4AC88" stroke-width="9" />
+		<circle cx="-52" cy="-38" r="22" fill="#B08D4F" opacity="0.45" />
+	</g>
+</svg>

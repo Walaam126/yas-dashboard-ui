@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Suede running sneaker">
+	<defs>
+		<linearGradient id="snkBg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#FDFBF7" />
+			<stop offset="100%" stop-color="#F0E8DB" />
+		</linearGradient>
+	</defs>
+	<rect width="800" height="800" fill="url(#snkBg)" />
+	<g transform="translate(400 430)">
+		<path
+			d="M-250 90 q-10 -60 40 -80 l70 -30 q40 -18 62 -56 l40 -70 q16 -28 48 -22 l40 8 q28 6 30 36 l4 52 q2 30 30 44 l120 60 q46 24 44 62 l-2 26 q-2 22 -26 22 h-476 q-26 0 -24 -52 z"
+			fill="#E8DAC4"
+			stroke="#C4AC88"
+			stroke-width="10"
+			stroke-linejoin="round"
+		/>
+		<path d="M-274 142 h548 q22 0 22 22 v20 q0 22 -22 22 h-548 q-22 0 -22 -22 v-20 q0 -22 22 -22 z" fill="#FFFDF9" stroke="#C4AC88" stroke-width="10" />
+		<path d="M-96 -60 l60 42 M-52 -118 l60 42 M-8 -172 l58 40" stroke="#98763E" stroke-width="12" stroke-linecap="round" opacity="0.65" />
+		<circle cx="150" cy="60" r="26" fill="#B08D4F" opacity="0.55" />
+	</g>
+</svg>

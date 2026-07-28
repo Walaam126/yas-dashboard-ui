@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Camel wool blazer">
+	<defs>
+		<linearGradient id="blzBg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#F3ECE0" />
+			<stop offset="100%" stop-color="#EFE3CC" />
+		</linearGradient>
+	</defs>
+	<rect width="800" height="800" fill="url(#blzBg)" />
+	<g transform="translate(400 400)">
+		<path d="M-70 -250 h140 l150 70 q40 18 40 62 v340 q0 26 -26 26 h-468 q-26 0 -26 -26 v-340 q0 -44 40 -62 z" fill="#C4AC88" stroke="#98763E" stroke-width="9" stroke-linejoin="round" opacity="0.95" />
+		<path d="M-70 -250 l70 130 l70 -130 l86 40 l-156 190 l-156 -190 z" fill="#D8C4A8" stroke="#98763E" stroke-width="9" stroke-linejoin="round" />
+		<line x1="0" y1="70" x2="0" y2="248" stroke="#98763E" stroke-width="7" opacity="0.5" />
+		<circle cx="0" cy="110" r="13" fill="#98763E" />
+		<circle cx="0" cy="176" r="13" fill="#98763E" />
+		<path d="M-232 130 h96 M136 130 h96" stroke="#98763E" stroke-width="7" opacity="0.4" />
+	</g>
+</svg>
