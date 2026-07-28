@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 	import SearchIcon from '@lucide/svelte/icons/search';
-	import { untrack } from 'svelte';
 
 	type Props = {
 		value: string;
@@ -22,19 +21,16 @@
 		onsearch
 	}: Props = $props();
 
-	let draft = $state(untrack(() => value));
+	// A writable derived: the field follows the URL (reset, back button) but the
+	// user can still type into it between navigations.
+	let draft = $derived(value);
 	let timer: ReturnType<typeof setTimeout> | undefined;
-
-	// Keep the field in step when the URL changes from elsewhere (reset, back button).
-	$effect(() => {
-		draft = value;
-	});
 
 	function handleInput(event: Event & { currentTarget: HTMLInputElement }) {
 		draft = event.currentTarget.value;
 		clearTimeout(timer);
 		const next = draft;
-		timer = setTimeout(() => onsearch(next), 200);
+		timer = setTimeout(onsearch, 200, next);
 	}
 
 	function handleSubmit(event: SubmitEvent) {

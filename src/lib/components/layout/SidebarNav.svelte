@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { cn } from '$lib/utils';
 	import { isNavItemActive, navItems } from './nav-items';
 
@@ -12,10 +13,10 @@
 </script>
 
 <nav class="flex-1 space-y-1 px-3 py-4" aria-label="Admin navigation">
-	{#each navItems as item (item.href)}
+	{#each navItems as item (item.route)}
 		{@const active = isNavItemActive(item, pathname)}
 		<a
-			href={item.href}
+			href={resolve(item.route)}
 			aria-current={active ? 'page' : undefined}
 			title={collapsed ? item.label : undefined}
 			onclick={onnavigate}

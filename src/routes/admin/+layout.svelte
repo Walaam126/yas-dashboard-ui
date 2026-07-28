@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
 	import Header from '$lib/components/layout/Header.svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
-	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
 

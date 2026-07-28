@@ -1,6 +1,6 @@
 <script lang="ts" module>
-	import { tv } from 'tailwind-variants';
 	import type { BadgeTone } from '$lib/types';
+	import { tv } from 'tailwind-variants';
 
 	export const badgeVariants = tv({
 		base: 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
@@ -20,8 +20,8 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import type { Snippet } from 'svelte';
+	import { cn } from '$lib/utils';
 
 	type Props = {
 		tone?: BadgeTone;

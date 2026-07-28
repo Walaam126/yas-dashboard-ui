@@ -151,13 +151,7 @@
 
 		{#each points as point, index (point.day)}
 			<circle cx={point.x} cy={point.y} r={hovered === index ? 5 : 3} fill="#B08D4F" />
-			<text
-				x={point.x}
-				y={height - 6}
-				text-anchor="middle"
-				fill="#8A7A6B"
-				font-size="12"
-			>
+			<text x={point.x} y={height - 6} text-anchor="middle" fill="#8A7A6B" font-size="12">
 				{point.day}
 			</text>
 		{/each}

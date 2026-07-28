@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import type { Snippet } from 'svelte';
 	import type { HTMLThAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils';
 
 	type Props = {
 		class?: string;

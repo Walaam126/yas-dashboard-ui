@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
-	import { Checkbox as CheckboxPrimitive } from 'bits-ui';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import MinusIcon from '@lucide/svelte/icons/minus';
+	import { Checkbox as CheckboxPrimitive } from 'bits-ui';
 
 	type Props = {
 		class?: string;

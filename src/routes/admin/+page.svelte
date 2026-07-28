@@ -1,4 +1,8 @@
 <script lang="ts">
+	import type { AttentionItem } from '$lib/components/dashboard/AttentionList.svelte';
+	import type { PageData } from './$types';
+	import { resolve } from '$app/paths';
+	import AttentionList from '$lib/components/dashboard/AttentionList.svelte';
 	import SalesChart from '$lib/components/dashboard/SalesChart.svelte';
 	import StatusBadge from '$lib/components/dashboard/StatusBadge.svelte';
 	import SummaryCard from '$lib/components/dashboard/SummaryCard.svelte';
@@ -6,8 +10,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
-	import { bhd, cn, countdownLabel, formatDate } from '$lib/utils';
-	import type { LucideIcon } from '@lucide/svelte';
+	import { bhd, countdownLabel, formatDate } from '$lib/utils';
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
 	import CalendarClockIcon from '@lucide/svelte/icons/calendar-clock';
 	import ClockIcon from '@lucide/svelte/icons/clock';
@@ -16,24 +19,8 @@
 	import PackageIcon from '@lucide/svelte/icons/package';
 	import ShoppingBagIcon from '@lucide/svelte/icons/shopping-bag';
 	import UsersIcon from '@lucide/svelte/icons/users';
-	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	type AttentionTone = 'gold' | 'amber' | 'red';
-
-	const attentionTone: Record<AttentionTone, string> = {
-		gold: 'bg-gold-soft text-gold-dark',
-		amber: 'bg-warning-soft text-warning',
-		red: 'bg-danger-soft text-danger'
-	};
-
-	interface AttentionItem {
-		icon: LucideIcon;
-		text: string;
-		href: string;
-		tone: AttentionTone;
-	}
 
 	// Every figure comes from the loaded summary, so each row matches the list it opens.
 	let attention = $derived.by<AttentionItem[]>(() => {
@@ -41,19 +28,19 @@
 			{
 				icon: ShoppingBagIcon,
 				text: `${data.summary.newOrders} new orders need confirmation`,
-				href: '/admin/orders?status=new',
+				href: resolve('/admin/orders?status=new'),
 				tone: 'gold'
 			},
 			{
 				icon: ClockIcon,
 				text: `${data.summary.preordersAwaitingSupplier} pre-orders awaiting supplier updates`,
-				href: '/admin/orders?type=preorder',
+				href: resolve('/admin/orders?type=preorder'),
 				tone: 'amber'
 			},
 			{
 				icon: PackageIcon,
 				text: `${data.summary.lowStock} products are low in stock`,
-				href: '/admin/products?stock=low_stock',
+				href: resolve('/admin/products?stock=low_stock'),
 				tone: 'red'
 			}
 		];
@@ -64,7 +51,7 @@
 				text: `${data.upcomingTour.name} closes in ${countdownLabel(
 					data.upcomingTour.orderDeadline
 				).toLowerCase()}`,
-				href: `/admin/tours/${data.upcomingTour.id}`,
+				href: resolve('/admin/tours/[id]', { id: data.upcomingTour.id }),
 				tone: 'gold'
 			});
 		}
@@ -81,7 +68,7 @@
 
 <PageHeader title="Overview" description="A calm snapshot of what needs your attention today.">
 	{#snippet actions()}
-		<Button href="/admin/orders">
+		<Button href={resolve('/admin/orders')}>
 			<ShoppingBagIcon class="h-4 w-4" aria-hidden="true" />
 			View Orders
 		</Button>
@@ -126,7 +113,7 @@
 			<CardHeader title="Recent Orders">
 				{#snippet action()}
 					<a
-						href="/admin/orders"
+						href={resolve('/admin/orders')}
 						class="inline-flex items-center gap-1 text-sm font-medium text-gold-dark hover:text-gold"
 					>
 						View all
@@ -147,7 +134,10 @@
 					{#each data.recentOrders as order (order.id)}
 						<Table.Row>
 							<Table.Cell class="px-5 font-medium text-espresso">
-								<a href="/admin/orders/{order.id}" class="hover:text-gold-dark">
+								<a
+									href={resolve('/admin/orders/[id]', { id: order.id })}
+									class="hover:text-gold-dark"
+								>
 									{order.number}
 									<span class="sr-only">— view order details</span>
 								</a>
@@ -173,27 +163,7 @@
 	<div class="space-y-6">
 		<Card>
 			<CardHeader title="Attention Required" />
-			<ul class="divide-y divide-beige-border">
-				{#each attention as item (item.text)}
-					<li>
-						<a
-							href={item.href}
-							class="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-cream-100"
-						>
-							<span
-								class={cn(
-									'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-									attentionTone[item.tone]
-								)}
-							>
-								<item.icon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-							</span>
-							<span class="flex-1 text-sm text-espresso">{item.text}</span>
-							<ArrowRightIcon class="h-4 w-4 shrink-0 text-espresso-muted" aria-hidden="true" />
-						</a>
-					</li>
-				{/each}
-			</ul>
+			<AttentionList items={attention} />
 		</Card>
 
 		{#if data.upcomingTour}
@@ -238,7 +208,11 @@
 							<dd class="font-medium text-espresso">{countdownLabel(tour.orderDeadline)}</dd>
 						</div>
 					</dl>
-					<Button variant="secondary" href="/admin/tours/{tour.id}" class="mt-4 w-full">
+					<Button
+						variant="secondary"
+						href={resolve('/admin/tours/[id]', { id: tour.id })}
+						class="mt-4 w-full"
+					>
 						Manage Tour
 					</Button>
 				</CardContent>

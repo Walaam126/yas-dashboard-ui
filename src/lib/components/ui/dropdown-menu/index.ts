@@ -10,10 +10,10 @@ const Group = DropdownMenuPrimitive.Group;
 
 export {
 	DropdownMenuContent as Content,
+	Group,
 	DropdownMenuItem as Item,
 	DropdownMenuLabel as Label,
-	DropdownMenuSeparator as Separator,
-	Group,
 	Root,
+	DropdownMenuSeparator as Separator,
 	Trigger
 };

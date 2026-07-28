@@ -29,8 +29,26 @@ export const orders: Order[] = [
 		delivery: 'same_day',
 		address: 'Villa 21, Road 2810, Block 428, Seef, Manama',
 		items: [
-			item('i1', 'Aurélie Structured Tote', 'Aurélie Paris', IMAGES.bag, 'One Size', 'Tan', 1, 119.0),
-			item('i2', 'Silk Scarf — Gold Weave', 'Maison Ora', IMAGES.blazer, 'One Size', 'Gold', 1, 38.0)
+			item(
+				'i1',
+				'Aurélie Structured Tote',
+				'Aurélie Paris',
+				IMAGES.bag,
+				'One Size',
+				'Tan',
+				1,
+				119.0
+			),
+			item(
+				'i2',
+				'Silk Scarf — Gold Weave',
+				'Maison Ora',
+				IMAGES.blazer,
+				'One Size',
+				'Gold',
+				1,
+				38.0
+			)
 		],
 		subtotal: 157.0,
 		discount: 10.0,
@@ -115,7 +133,16 @@ export const orders: Order[] = [
 		delivery: 'delivery',
 		address: 'Villa 9, Road 55, Block 338, Umm Al Hassam',
 		items: [
-			item('i5', 'Heritage 991 Suede Runner', 'New Balance', IMAGES.sneaker, '42', 'Beige', 1, 89.0),
+			item(
+				'i5',
+				'Heritage 991 Suede Runner',
+				'New Balance',
+				IMAGES.sneaker,
+				'42',
+				'Beige',
+				1,
+				89.0
+			),
 			item('i6', 'Kids Suede Sneaker', 'New Balance', IMAGES.sneaker, '30', 'Beige', 1, 45.0)
 		],
 		subtotal: 134.0,
@@ -142,7 +169,9 @@ export const orders: Order[] = [
 		paymentMethod: 'BenefitPay',
 		delivery: 'same_day',
 		address: 'Flat 12, Building 88, Road 3801, Adliya',
-		items: [item('i7', 'Mini Crossbody Bag', 'Aurélie Paris', IMAGES.bag, 'One Size', 'Black', 1, 68.0)],
+		items: [
+			item('i7', 'Mini Crossbody Bag', 'Aurélie Paris', IMAGES.bag, 'One Size', 'Black', 1, 68.0)
+		],
 		subtotal: 68.0,
 		discount: 0,
 		deliveryFee: 2.0,
@@ -167,7 +196,16 @@ export const orders: Order[] = [
 		delivery: 'delivery',
 		address: 'Villa 3, Road 1207, Block 712, Riffa',
 		items: [
-			item('i8', 'Aurélie Structured Tote', 'Aurélie Paris', IMAGES.bag, 'One Size', 'Black', 1, 145.0)
+			item(
+				'i8',
+				'Aurélie Structured Tote',
+				'Aurélie Paris',
+				IMAGES.bag,
+				'One Size',
+				'Black',
+				1,
+				145.0
+			)
 		],
 		subtotal: 145.0,
 		discount: 0,

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge';
 	import type {
 		CustomerStatus,
 		DiscountStatus,
@@ -11,6 +10,7 @@
 		TourStatus,
 		Visibility
 	} from '$lib/types';
+	import { Badge } from '$lib/components/ui/badge';
 	import {
 		customerStatusMap,
 		discountStatusMap,

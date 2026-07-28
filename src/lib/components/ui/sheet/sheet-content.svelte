@@ -1,5 +1,6 @@
 <script lang="ts" module>
-	import { tv, type VariantProps } from 'tailwind-variants';
+	import type { VariantProps } from 'tailwind-variants';
+	import { tv } from 'tailwind-variants';
 
 	export const sheetVariants = tv({
 		base: 'fixed z-50 flex flex-col bg-cream shadow-drawer outline-none',
@@ -19,10 +20,10 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import { Dialog as SheetPrimitive } from 'bits-ui';
-	import XIcon from '@lucide/svelte/icons/x';
 	import type { Snippet } from 'svelte';
+	import { cn } from '$lib/utils';
+	import XIcon from '@lucide/svelte/icons/x';
+	import { Dialog as SheetPrimitive } from 'bits-ui';
 	import SheetOverlay from './sheet-overlay.svelte';
 
 	type Props = {

@@ -1,11 +1,5 @@
 export type TourStatus =
-	| 'draft'
-	| 'open'
-	| 'closed'
-	| 'shopping'
-	| 'returning'
-	| 'completed'
-	| 'cancelled';
+	'draft' | 'open' | 'closed' | 'shopping' | 'returning' | 'completed' | 'cancelled';
 
 export interface Tour {
 	id: string;

@@ -1,5 +1,5 @@
-import { getDashboardSummary, getRecentOrders, getUpcomingTour, salesLast7Days } from '$lib/data';
 import type { PageServerLoad } from './$types';
+import { getDashboardSummary, getRecentOrders, getUpcomingTour, salesLast7Days } from '$lib/data';
 
 export const load: PageServerLoad = () => {
 	return {

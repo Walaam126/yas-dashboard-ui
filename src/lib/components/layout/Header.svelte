@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils';
 	import BellIcon from '@lucide/svelte/icons/bell';
@@ -37,7 +38,7 @@
 
 	<!-- Global search: submits into the orders list, which is the busiest view. -->
 	<div class="relative max-w-md flex-1">
-		<form action="/admin/orders" class="hidden items-center md:flex" role="search">
+		<form action={resolve('/admin/orders')} class="hidden items-center md:flex" role="search">
 			<label class="sr-only" for="global-search">Search orders, products and customers</label>
 			<SearchIcon
 				class="pointer-events-none absolute left-3 h-4 w-4 text-espresso-muted"
@@ -127,7 +128,7 @@
 					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						{#snippet child({ props })}
-							<a href="/admin/settings" {...props}>
+							<a href={resolve('/admin/settings')} {...props}>
 								<SettingsIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 								Settings
 							</a>
@@ -149,13 +150,14 @@
 			transition:slide={{ duration: 160 }}
 			class="absolute inset-x-0 top-full border-b border-beige-border bg-cream p-3 md:hidden"
 		>
-			<form action="/admin/orders" class="relative flex items-center" role="search">
+			<form action={resolve('/admin/orders')} class="relative flex items-center" role="search">
 				<label class="sr-only" for="mobile-search-input">Search</label>
 				<SearchIcon
 					class="pointer-events-none absolute left-3 h-4 w-4 text-espresso-muted"
 					aria-hidden="true"
 				/>
-				<!-- svelte-ignore a11y_autofocus — the field is the sole purpose of this overlay -->
+				<!-- The overlay exists only to expose this field, so focusing it is expected. -->
+				<!-- svelte-ignore a11y_autofocus -->
 				<input
 					id="mobile-search-input"
 					name="q"

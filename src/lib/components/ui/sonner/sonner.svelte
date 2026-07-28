@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Toaster as Sonner, type ToasterProps } from 'svelte-sonner';
+	import type { ToasterProps } from 'svelte-sonner';
+	import { Toaster as Sonner } from 'svelte-sonner';
 
 	let { ...rest }: ToasterProps = $props();
 </script>

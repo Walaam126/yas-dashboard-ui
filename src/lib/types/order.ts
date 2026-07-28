@@ -1,13 +1,7 @@
 export type OrderType = 'ready' | 'preorder' | 'tour';
 
 export type OrderStatus =
-	| 'new'
-	| 'confirmed'
-	| 'preparing'
-	| 'ready_delivery'
-	| 'out_delivery'
-	| 'completed'
-	| 'cancelled';
+	'new' | 'confirmed' | 'preparing' | 'ready_delivery' | 'out_delivery' | 'completed' | 'cancelled';
 
 export type PaymentStatus = 'paid' | 'unpaid' | 'partial' | 'refunded';
 

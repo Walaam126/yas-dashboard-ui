@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import type { LucideIcon } from '@lucide/svelte';
+	import { cn } from '$lib/utils';
 	import TrendingDownIcon from '@lucide/svelte/icons/trending-down';
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 
@@ -28,7 +28,9 @@
 <div class="rounded-xl border border-beige-border bg-surface p-4 shadow-card sm:p-5">
 	<div class="flex items-start justify-between gap-3">
 		<p class="text-sm font-medium text-espresso-muted">{label}</p>
-		<span class={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', iconTone[tone])}>
+		<span
+			class={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', iconTone[tone])}
+		>
 			<Icon class="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
 		</span>
 	</div>

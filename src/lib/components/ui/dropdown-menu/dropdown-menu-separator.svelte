@@ -7,7 +7,4 @@
 	let { class: className, ...rest }: Props = $props();
 </script>
 
-<DropdownMenuPrimitive.Separator
-	class={cn('my-1 h-px bg-beige-border', className)}
-	{...rest}
-/>
+<DropdownMenuPrimitive.Separator class={cn('my-1 h-px bg-beige-border', className)} {...rest} />

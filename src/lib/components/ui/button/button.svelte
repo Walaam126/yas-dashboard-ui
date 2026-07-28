@@ -1,5 +1,6 @@
 <script lang="ts" module>
-	import { tv, type VariantProps } from 'tailwind-variants';
+	import type { VariantProps } from 'tailwind-variants';
+	import { tv } from 'tailwind-variants';
 
 	export const buttonVariants = tv({
 		base: 'inline-flex shrink-0 items-center justify-center rounded-lg font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
@@ -28,9 +29,9 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils';
 
 	/** Renders an anchor when `href` is given, otherwise a button. */
 	type Props = HTMLButtonAttributes &
@@ -55,6 +56,7 @@
 </script>
 
 {#if href}
+	<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- callers pass an already-resolved path -->
 	<a {href} class={classes} {...rest}>
 		{@render children()}
 	</a>

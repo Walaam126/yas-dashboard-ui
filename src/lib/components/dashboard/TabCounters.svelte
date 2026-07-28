@@ -19,6 +19,11 @@
 	let { tabs, active, label }: Props = $props();
 </script>
 
+<!--
+	Tab hrefs are produced by `withParams()` from the page's own (already resolved)
+	URL, so `resolve()` has nothing left to contribute here.
+-->
+<!-- eslint-disable svelte/no-navigation-without-resolve -->
 <nav class="flex flex-wrap gap-1.5" aria-label={label}>
 	{#each tabs as tab (tab.key)}
 		{@const isActive = tab.key === active}
