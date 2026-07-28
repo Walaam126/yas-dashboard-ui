@@ -25,7 +25,8 @@ export const load: PageServerLoad = async ({ url }) => {
 	return {
 		search: param(url, 'q', ''),
 		total: customers.length,
-		customers: filtered,
+		// Streamed so the search field stays responsive while results load.
+		results: Promise.resolve(filtered),
 		selected: selected ?? null,
 		history: selected ? ordersForCustomer(selected.id) : [],
 		noteForm: await superValidate({ note: selected?.notes ?? '' }, zod4(noteSchema))

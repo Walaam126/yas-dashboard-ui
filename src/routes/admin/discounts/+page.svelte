@@ -7,6 +7,7 @@
 	import PageHeader from '$lib/components/layout/PageHeader.svelte';
 	import ConfirmAction from '$lib/components/shared/ConfirmAction.svelte';
 	import EmptyState from '$lib/components/shared/EmptyState.svelte';
+	import TableSkeleton from '$lib/components/shared/TableSkeleton.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -51,7 +52,7 @@
 
 <PageHeader
 	title="Discounts"
-	count="{data.discounts.length} discounts"
+	count="{data.total} discounts"
 	description="Create promo codes and offers for your customers."
 >
 	{#snippet actions()}
@@ -62,114 +63,123 @@
 	{/snippet}
 </PageHeader>
 
-<Card>
-	{#if data.discounts.length === 0}
-		<EmptyState
-			icon={TicketPercentIcon}
-			title="No discounts yet"
-			description="Create your first promo code or offer to reward customers."
-			actionLabel="Create Discount"
-			onaction={openCreate}
-		/>
-	{:else}
-		<!-- Desktop table -->
-		<div class="hidden md:block">
-			<Table.Root minWidthClass="min-w-[820px]">
-				<Table.HeaderRow>
-					<Table.Head class="px-5">Name / Code</Table.Head>
-					<Table.Head>Type</Table.Head>
-					<Table.Head>Value</Table.Head>
-					<Table.Head>Usage</Table.Head>
-					<Table.Head>Dates</Table.Head>
-					<Table.Head>Status</Table.Head>
-					<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
-				</Table.HeaderRow>
-				<Table.Body>
-					{#each data.discounts as discount (discount.id)}
-						<Table.Row>
-							<Table.Cell class="px-5">
+{#await data.results}
+	<Card><TableSkeleton rows={5} cols={6} /></Card>
+{:then discounts}
+	<Card>
+		{#if discounts.length === 0}
+			<EmptyState
+				icon={TicketPercentIcon}
+				title="No discounts yet"
+				description="Create your first promo code or offer to reward customers."
+				actionLabel="Create Discount"
+				onaction={openCreate}
+			/>
+		{:else}
+			<!-- Desktop table -->
+			<div class="hidden md:block">
+				<Table.Root minWidthClass="min-w-[820px]">
+					<Table.HeaderRow>
+						<Table.Head class="px-5">Name / Code</Table.Head>
+						<Table.Head>Type</Table.Head>
+						<Table.Head>Value</Table.Head>
+						<Table.Head>Usage</Table.Head>
+						<Table.Head>Dates</Table.Head>
+						<Table.Head>Status</Table.Head>
+						<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
+					</Table.HeaderRow>
+					<Table.Body>
+						{#each discounts as discount (discount.id)}
+							<Table.Row>
+								<Table.Cell class="px-5">
+									<p class="font-medium text-espresso">{discount.name}</p>
+									<code class="rounded bg-beige px-1.5 py-0.5 text-xs text-espresso-light">
+										{discount.code}
+									</code>
+								</Table.Cell>
+								<Table.Cell class="text-espresso-light">
+									{discountTypeMap[discount.type]}
+								</Table.Cell>
+								<Table.Cell class="font-medium text-espresso">{discount.value}</Table.Cell>
+								<Table.Cell class="text-espresso-light">
+									{discount.used} / {discount.limit}
+								</Table.Cell>
+								<Table.Cell class="text-espresso-muted">
+									{formatDate(discount.start)} – {formatDate(discount.end)}
+								</Table.Cell>
+								<Table.Cell>
+									<StatusBadge kind="discountStatus" value={discount.status} />
+								</Table.Cell>
+								<Table.Cell>
+									<DropdownMenu.Root>
+										<DropdownMenu.Trigger
+											class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-espresso-muted transition-colors hover:bg-cream-200 hover:text-espresso"
+										>
+											<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
+											<span class="sr-only">Actions for {discount.name}</span>
+										</DropdownMenu.Trigger>
+										<DropdownMenu.Content>
+											<DropdownMenu.Item onSelect={() => openEdit(discount)}>
+												<PencilIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+												Edit
+											</DropdownMenu.Item>
+											<DropdownMenu.Item
+												onSelect={() => toast.success(`${discount.name} duplicated`)}
+											>
+												<CopyIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+												Duplicate
+											</DropdownMenu.Item>
+											<DropdownMenu.Item destructive onSelect={() => requestDelete(discount)}>
+												<Trash2Icon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+												Delete
+											</DropdownMenu.Item>
+										</DropdownMenu.Content>
+									</DropdownMenu.Root>
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			</div>
+
+			<!-- Mobile cards -->
+			<ul class="divide-y divide-beige-border md:hidden">
+				{#each discounts as discount (discount.id)}
+					<li class="p-4">
+						<div class="flex items-start justify-between gap-3">
+							<div class="min-w-0">
 								<p class="font-medium text-espresso">{discount.name}</p>
 								<code class="rounded bg-beige px-1.5 py-0.5 text-xs text-espresso-light">
 									{discount.code}
 								</code>
-							</Table.Cell>
-							<Table.Cell class="text-espresso-light">
-								{discountTypeMap[discount.type]}
-							</Table.Cell>
-							<Table.Cell class="font-medium text-espresso">{discount.value}</Table.Cell>
-							<Table.Cell class="text-espresso-light">
-								{discount.used} / {discount.limit}
-							</Table.Cell>
-							<Table.Cell class="text-espresso-muted">
-								{formatDate(discount.start)} – {formatDate(discount.end)}
-							</Table.Cell>
-							<Table.Cell>
-								<StatusBadge kind="discountStatus" value={discount.status} />
-							</Table.Cell>
-							<Table.Cell>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger
-										class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-espresso-muted transition-colors hover:bg-cream-200 hover:text-espresso"
-									>
-										<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
-										<span class="sr-only">Actions for {discount.name}</span>
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content>
-										<DropdownMenu.Item onSelect={() => openEdit(discount)}>
-											<PencilIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-											Edit
-										</DropdownMenu.Item>
-										<DropdownMenu.Item
-											onSelect={() => toast.success(`${discount.name} duplicated`)}
-										>
-											<CopyIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-											Duplicate
-										</DropdownMenu.Item>
-										<DropdownMenu.Item destructive onSelect={() => requestDelete(discount)}>
-											<Trash2Icon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-											Delete
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
-							</Table.Cell>
-						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
-		</div>
-
-		<!-- Mobile cards -->
-		<ul class="divide-y divide-beige-border md:hidden">
-			{#each data.discounts as discount (discount.id)}
-				<li class="p-4">
-					<div class="flex items-start justify-between gap-3">
-						<div class="min-w-0">
-							<p class="font-medium text-espresso">{discount.name}</p>
-							<code class="rounded bg-beige px-1.5 py-0.5 text-xs text-espresso-light">
-								{discount.code}
-							</code>
+							</div>
+							<StatusBadge kind="discountStatus" value={discount.status} />
 						</div>
-						<StatusBadge kind="discountStatus" value={discount.status} />
-					</div>
-					<div class="mt-2 flex items-center justify-between gap-3 text-sm text-espresso-muted">
-						<span>{discountTypeMap[discount.type]} · {discount.value}</span>
-						<span>{discount.used}/{discount.limit} used</span>
-					</div>
-					<div class="mt-3 flex gap-2">
-						<Button size="sm" variant="secondary" class="flex-1" onclick={() => openEdit(discount)}>
-							<PencilIcon class="h-3.5 w-3.5" aria-hidden="true" />
-							Edit
-						</Button>
-						<Button size="sm" variant="danger" onclick={() => requestDelete(discount)}>
-							<Trash2Icon class="h-3.5 w-3.5" aria-hidden="true" />
-							<span class="sr-only">Delete {discount.name}</span>
-						</Button>
-					</div>
-				</li>
-			{/each}
-		</ul>
-	{/if}
-</Card>
+						<div class="mt-2 flex items-center justify-between gap-3 text-sm text-espresso-muted">
+							<span>{discountTypeMap[discount.type]} · {discount.value}</span>
+							<span>{discount.used}/{discount.limit} used</span>
+						</div>
+						<div class="mt-3 flex gap-2">
+							<Button
+								size="sm"
+								variant="secondary"
+								class="flex-1"
+								onclick={() => openEdit(discount)}
+							>
+								<PencilIcon class="h-3.5 w-3.5" aria-hidden="true" />
+								Edit
+							</Button>
+							<Button size="sm" variant="danger" onclick={() => requestDelete(discount)}>
+								<Trash2Icon class="h-3.5 w-3.5" aria-hidden="true" />
+								<span class="sr-only">Delete {discount.name}</span>
+							</Button>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</Card>
+{/await}
 
 <Sheet.Root bind:open={drawerOpen}>
 	<!-- Remount the form when switching between create and a specific discount. -->

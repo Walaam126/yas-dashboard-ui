@@ -7,7 +7,9 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async () => {
 	return {
-		tours,
+		total: tours.length,
+		// Streamed so the page header renders before the cards arrive.
+		results: Promise.resolve(tours),
 		createForm: await superValidate(emptyTourForm(), zod4(tourSchema))
 	};
 };

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import PageHeader from '$lib/components/layout/PageHeader.svelte';
+	import CardSkeleton from '$lib/components/shared/CardSkeleton.svelte';
 	import TourCard from '$lib/components/tours/TourCard.svelte';
 	import TourFormFields from '$lib/components/tours/TourFormFields.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -38,7 +39,7 @@
 
 <PageHeader
 	title="Tours"
-	count="{data.tours.length} tours"
+	count="{data.total} tours"
 	description="Plan and manage scheduled shopping trips where customers request products."
 >
 	{#snippet actions()}
@@ -50,9 +51,15 @@
 </PageHeader>
 
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-	{#each data.tours as tour (tour.id)}
-		<TourCard {tour} />
-	{/each}
+	{#await data.results}
+		{#each { length: 3 } as _, index (index)}
+			<CardSkeleton />
+		{/each}
+	{:then tours}
+		{#each tours as tour (tour.id)}
+			<TourCard {tour} />
+		{/each}
+	{/await}
 </div>
 
 <Sheet.Root bind:open={createOpen}>

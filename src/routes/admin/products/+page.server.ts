@@ -17,6 +17,7 @@ export const load: PageServerLoad = ({ url }) => {
 		query,
 		view: param(url, 'view', 'table') === 'grid' ? ('grid' as const) : ('table' as const),
 		total: products.length,
-		products: filterProducts(products, query)
+		// Streamed so the filter bar stays interactive while the list loads.
+		results: Promise.resolve(filterProducts(products, query))
 	};
 };

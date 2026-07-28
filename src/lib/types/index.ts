@@ -11,7 +11,6 @@ export type {
 	PaymentStatus
 } from './order';
 export type { Category, Product, ProductType, StockStatus, Visibility } from './product';
-export { CATEGORIES, PRODUCT_TYPES } from './product';
 export type { Tour, TourStatus } from './tour';
 
 /** Daily sales point used by the overview chart. */

@@ -7,8 +7,10 @@
 	import StatusBadge from '$lib/components/dashboard/StatusBadge.svelte';
 	import SummaryCard from '$lib/components/dashboard/SummaryCard.svelte';
 	import PageHeader from '$lib/components/layout/PageHeader.svelte';
+	import TableSkeleton from '$lib/components/shared/TableSkeleton.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Table from '$lib/components/ui/table';
 	import { bhd, countdownLabel, formatDate } from '$lib/utils';
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
@@ -132,40 +134,48 @@
 				{/snippet}
 			</CardHeader>
 
-			<Table.Root minWidthClass="min-w-[640px]">
-				<Table.HeaderRow>
-					<Table.Head class="px-5">Order</Table.Head>
-					<Table.Head>Customer</Table.Head>
-					<Table.Head>Type</Table.Head>
-					<Table.Head>Total</Table.Head>
-					<Table.Head>Status</Table.Head>
-				</Table.HeaderRow>
-				<Table.Body>
-					{#each data.recentOrders as order (order.id)}
-						<Table.Row>
-							<Table.Cell class="px-5 font-medium text-espresso">
-								<a
-									href={resolve('/admin/orders/[id]', { id: order.id })}
-									class="hover:text-gold-dark"
-								>
-									{order.number}
-									<span class="sr-only">— view order details</span>
-								</a>
-							</Table.Cell>
-							<Table.Cell class="text-espresso-light">{order.customer}</Table.Cell>
-							<Table.Cell><StatusBadge kind="orderType" value={order.type} /></Table.Cell>
-							<Table.Cell class="font-medium text-espresso">{bhd(order.total)}</Table.Cell>
-							<Table.Cell><StatusBadge kind="orderStatus" value={order.status} /></Table.Cell>
-						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
+			{#await data.recentOrders}
+				<TableSkeleton rows={5} cols={5} />
+			{:then recentOrders}
+				<Table.Root minWidthClass="min-w-[640px]">
+					<Table.HeaderRow>
+						<Table.Head class="px-5">Order</Table.Head>
+						<Table.Head>Customer</Table.Head>
+						<Table.Head>Type</Table.Head>
+						<Table.Head>Total</Table.Head>
+						<Table.Head>Status</Table.Head>
+					</Table.HeaderRow>
+					<Table.Body>
+						{#each recentOrders as order (order.id)}
+							<Table.Row>
+								<Table.Cell class="px-5 font-medium text-espresso">
+									<a
+										href={resolve('/admin/orders/[id]', { id: order.id })}
+										class="hover:text-gold-dark"
+									>
+										{order.number}
+										<span class="sr-only">— view order details</span>
+									</a>
+								</Table.Cell>
+								<Table.Cell class="text-espresso-light">{order.customer}</Table.Cell>
+								<Table.Cell><StatusBadge kind="orderType" value={order.type} /></Table.Cell>
+								<Table.Cell class="font-medium text-espresso">{bhd(order.total)}</Table.Cell>
+								<Table.Cell><StatusBadge kind="orderStatus" value={order.status} /></Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			{/await}
 		</Card>
 
 		<Card>
 			<CardHeader title="Sales — Last 7 Days" />
 			<CardContent>
-				<SalesChart data={data.sales} />
+				{#await data.sales}
+					<Skeleton class="h-56 w-full" />
+				{:then sales}
+					<SalesChart data={sales} />
+				{/await}
 			</CardContent>
 		</Card>
 	</div>

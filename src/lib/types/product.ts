@@ -27,6 +27,3 @@ export interface Product {
 	colors: string[];
 	sizes: string[];
 }
-
-export const CATEGORIES: readonly Category[] = ['Women', 'Men', 'Kids'];
-export const PRODUCT_TYPES: readonly ProductType[] = ['Bag', 'Shoes', 'Clothes', 'Accessories'];

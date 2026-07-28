@@ -19,6 +19,8 @@ export const load: PageServerLoad = ({ url }) => {
 		query,
 		total: orders.length,
 		tabCounts: countOrdersPerTab(orders),
-		orders: filterOrders(orders, query)
+		// Streamed (not awaited) so the page shell and tabs render immediately and
+		// the table shows its skeleton until the rows arrive.
+		results: Promise.resolve(filterOrders(orders, query))
 	};
 };

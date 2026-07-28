@@ -12,7 +12,9 @@ export const load: PageServerLoad = async ({ url }) => {
 	const editing = editId ? findDiscount(editId) : undefined;
 
 	return {
-		discounts,
+		total: discounts.length,
+		// Streamed so the header and drawer render before the rows arrive.
+		results: Promise.resolve(discounts),
 		editing: editing ?? null,
 		form: await superValidate(
 			editing ? discountToForm(editing) : emptyDiscountForm(),

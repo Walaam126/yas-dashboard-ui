@@ -11,6 +11,7 @@
 	import ProductRowActions from '$lib/components/products/ProductRowActions.svelte';
 	import ConfirmAction from '$lib/components/shared/ConfirmAction.svelte';
 	import EmptyState from '$lib/components/shared/EmptyState.svelte';
+	import TableSkeleton from '$lib/components/shared/TableSkeleton.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
@@ -182,128 +183,133 @@
 	{/snippet}
 </FilterBar>
 
-{#if data.products.length === 0}
-	<Card>
-		<EmptyState
-			icon={PackageIcon}
-			title="No products found"
-			description="No products match your filters. Add a new product or adjust your search."
-			actionLabel="Add Product"
-			actionHref={resolve('/admin/products/new')}
-		/>
-	</Card>
-{:else if data.view === 'grid'}
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-		{#each data.products as product (product.id)}
-			<ProductCard {product} ondelete={requestDelete} />
-		{/each}
-	</div>
-{:else}
-	<Card>
-		<!-- Desktop table -->
-		<div class="hidden lg:block">
-			<Table.Root>
-				<Table.HeaderRow>
-					<Table.Head class="px-4">Product</Table.Head>
-					<Table.Head>Category</Table.Head>
-					<Table.Head>Order Type</Table.Head>
-					<Table.Head>Price</Table.Head>
-					<Table.Head>Stock</Table.Head>
-					<Table.Head>Visibility</Table.Head>
-					<Table.Head>Updated</Table.Head>
-					<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
-				</Table.HeaderRow>
-				<Table.Body>
-					{#each data.products as product (product.id)}
-						<Table.Row>
-							<Table.Cell class="px-4">
-								<div class="flex items-center gap-3">
-									<img
-										src={product.image}
-										alt={product.name}
-										class="h-11 w-11 rounded-lg border border-beige-border object-cover"
-										loading="lazy"
-									/>
-									<div>
-										<a
-											href={resolve('/admin/products/[id]', { id: product.id })}
-											class="font-medium text-espresso hover:text-gold-dark"
-										>
-											{product.name}
-										</a>
-										<p class="text-xs text-espresso-muted">
-											{product.brand} · {product.sku}
-										</p>
-									</div>
-								</div>
-							</Table.Cell>
-							<Table.Cell class="text-espresso-light">
-								{product.category} · {product.productType}
-							</Table.Cell>
-							<Table.Cell><StatusBadge kind="orderType" value={product.orderType} /></Table.Cell>
-							<Table.Cell>
-								{#if product.salePrice}
-									<span class="flex flex-col">
-										<span class="font-medium text-espresso">{bhd(product.salePrice)}</span>
-										<span class="text-xs text-espresso-muted line-through">
-											{bhd(product.price)}
-										</span>
-									</span>
-								{:else}
-									<span class="font-medium text-espresso">{bhd(product.price)}</span>
-								{/if}
-							</Table.Cell>
-							<Table.Cell>
-								<div class="flex flex-col gap-0.5">
-									<StatusBadge kind="stock" value={product.stockStatus} />
-									{#if product.stockStatus !== 'not_tracked'}
-										<span class="text-xs text-espresso-muted">{product.stock} available</span>
-									{/if}
-								</div>
-							</Table.Cell>
-							<Table.Cell><StatusBadge kind="visibility" value={product.visibility} /></Table.Cell>
-							<Table.Cell class="text-espresso-muted">{formatDate(product.updated)}</Table.Cell>
-							<Table.Cell>
-								<ProductRowActions {product} ondelete={requestDelete} />
-							</Table.Cell>
-						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
-		</div>
-
-		<!-- Mobile cards -->
-		<ul class="divide-y divide-beige-border lg:hidden">
-			{#each data.products as product (product.id)}
-				<li class="flex gap-3 p-4">
-					<img
-						src={product.image}
-						alt={product.name}
-						class="h-16 w-16 shrink-0 rounded-lg border border-beige-border object-cover"
-						loading="lazy"
-					/>
-					<div class="min-w-0 flex-1">
-						<p class="text-xs text-espresso-muted">{product.brand}</p>
-						<a
-							href={resolve('/admin/products/[id]', { id: product.id })}
-							class="block truncate font-medium text-espresso hover:text-gold-dark"
-						>
-							{product.name}
-						</a>
-						<div class="mt-1 flex flex-wrap items-center gap-1.5">
-							<StatusBadge kind="stock" value={product.stockStatus} />
-							<StatusBadge kind="visibility" value={product.visibility} />
-						</div>
-						<p class="mt-1 font-semibold text-espresso">
-							{bhd(product.salePrice ?? product.price)}
-						</p>
-					</div>
-					<ProductRowActions {product} ondelete={requestDelete} />
-				</li>
+{#await data.results}
+	<Card><TableSkeleton rows={6} cols={6} /></Card>
+{:then products}
+	{#if products.length === 0}
+		<Card>
+			<EmptyState
+				icon={PackageIcon}
+				title="No products found"
+				description="No products match your filters. Add a new product or adjust your search."
+				actionLabel="Add Product"
+				actionHref={resolve('/admin/products/new')}
+			/>
+		</Card>
+	{:else if data.view === 'grid'}
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			{#each products as product (product.id)}
+				<ProductCard {product} ondelete={requestDelete} />
 			{/each}
-		</ul>
-	</Card>
-{/if}
+		</div>
+	{:else}
+		<Card>
+			<!-- Desktop table -->
+			<div class="hidden lg:block">
+				<Table.Root>
+					<Table.HeaderRow>
+						<Table.Head class="px-4">Product</Table.Head>
+						<Table.Head>Category</Table.Head>
+						<Table.Head>Order Type</Table.Head>
+						<Table.Head>Price</Table.Head>
+						<Table.Head>Stock</Table.Head>
+						<Table.Head>Visibility</Table.Head>
+						<Table.Head>Updated</Table.Head>
+						<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
+					</Table.HeaderRow>
+					<Table.Body>
+						{#each products as product (product.id)}
+							<Table.Row>
+								<Table.Cell class="px-4">
+									<div class="flex items-center gap-3">
+										<img
+											src={product.image}
+											alt={product.name}
+											class="h-11 w-11 rounded-lg border border-beige-border object-cover"
+											loading="lazy"
+										/>
+										<div>
+											<a
+												href={resolve('/admin/products/[id]', { id: product.id })}
+												class="font-medium text-espresso hover:text-gold-dark"
+											>
+												{product.name}
+											</a>
+											<p class="text-xs text-espresso-muted">
+												{product.brand} · {product.sku}
+											</p>
+										</div>
+									</div>
+								</Table.Cell>
+								<Table.Cell class="text-espresso-light">
+									{product.category} · {product.productType}
+								</Table.Cell>
+								<Table.Cell><StatusBadge kind="orderType" value={product.orderType} /></Table.Cell>
+								<Table.Cell>
+									{#if product.salePrice}
+										<span class="flex flex-col">
+											<span class="font-medium text-espresso">{bhd(product.salePrice)}</span>
+											<span class="text-xs text-espresso-muted line-through">
+												{bhd(product.price)}
+											</span>
+										</span>
+									{:else}
+										<span class="font-medium text-espresso">{bhd(product.price)}</span>
+									{/if}
+								</Table.Cell>
+								<Table.Cell>
+									<div class="flex flex-col gap-0.5">
+										<StatusBadge kind="stock" value={product.stockStatus} />
+										{#if product.stockStatus !== 'not_tracked'}
+											<span class="text-xs text-espresso-muted">{product.stock} available</span>
+										{/if}
+									</div>
+								</Table.Cell>
+								<Table.Cell><StatusBadge kind="visibility" value={product.visibility} /></Table.Cell
+								>
+								<Table.Cell class="text-espresso-muted">{formatDate(product.updated)}</Table.Cell>
+								<Table.Cell>
+									<ProductRowActions {product} ondelete={requestDelete} />
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			</div>
+
+			<!-- Mobile cards -->
+			<ul class="divide-y divide-beige-border lg:hidden">
+				{#each products as product (product.id)}
+					<li class="flex gap-3 p-4">
+						<img
+							src={product.image}
+							alt={product.name}
+							class="h-16 w-16 shrink-0 rounded-lg border border-beige-border object-cover"
+							loading="lazy"
+						/>
+						<div class="min-w-0 flex-1">
+							<p class="text-xs text-espresso-muted">{product.brand}</p>
+							<a
+								href={resolve('/admin/products/[id]', { id: product.id })}
+								class="block truncate font-medium text-espresso hover:text-gold-dark"
+							>
+								{product.name}
+							</a>
+							<div class="mt-1 flex flex-wrap items-center gap-1.5">
+								<StatusBadge kind="stock" value={product.stockStatus} />
+								<StatusBadge kind="visibility" value={product.visibility} />
+							</div>
+							<p class="mt-1 font-semibold text-espresso">
+								{bhd(product.salePrice ?? product.price)}
+							</p>
+						</div>
+						<ProductRowActions {product} ondelete={requestDelete} />
+					</li>
+				{/each}
+			</ul>
+		</Card>
+	{/if}
+{/await}
 
 <ConfirmAction
 	bind:open={deleteOpen}
