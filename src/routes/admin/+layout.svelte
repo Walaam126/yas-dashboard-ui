@@ -9,7 +9,7 @@
 	let mobileNavOpen = $state(false);
 </script>
 
-<div class="flex h-screen w-full overflow-hidden bg-cream">
+<div class="flex h-screen w-full overflow-hidden bg-background">
 	<Sidebar pathname={page.url.pathname} bind:mobileOpen={mobileNavOpen} />
 
 	<div class="flex min-w-0 flex-1 flex-col">

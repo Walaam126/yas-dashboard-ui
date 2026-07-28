@@ -15,15 +15,15 @@
 
 <div class="flex items-center justify-between gap-4 p-5">
 	<div>
-		<p class="flex flex-wrap items-center gap-2 text-sm font-medium text-espresso">
+		<p class="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
 			{name}
 			{#if checked}
-				<Badge tone="green">Enabled</Badge>
+				<Badge class="bg-success-soft text-success">Enabled</Badge>
 			{:else}
-				<Badge tone="neutral">Disabled</Badge>
+				<Badge variant="secondary">Disabled</Badge>
 			{/if}
 		</p>
-		<p class="text-xs text-espresso-muted">{description}</p>
+		<p class="text-xs text-muted-foreground">{description}</p>
 	</div>
 	<Switch name={field} bind:checked aria-label={name} />
 </div>

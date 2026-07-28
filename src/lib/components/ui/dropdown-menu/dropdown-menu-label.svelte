@@ -1,19 +1,24 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { cn } from '$lib/utils';
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { cn, type WithElementRef } from "$lib/utils.js";
+	import type { HTMLAttributes } from "svelte/elements";
 
-	type Props = {
-		class?: string;
-		children: Snippet;
-	} & Omit<DropdownMenuPrimitive.GroupHeadingProps, 'class' | 'children'>;
-
-	let { class: className, children, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		inset,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
+		inset?: boolean;
+	} = $props();
 </script>
 
-<DropdownMenuPrimitive.GroupHeading
-	class={cn('border-b border-beige-border px-4 py-2.5', className)}
-	{...rest}
+<div
+	bind:this={ref}
+	data-slot="dropdown-menu-label"
+	data-inset={inset}
+	class={cn("text-muted-foreground px-2 py-1.5 text-xs font-medium data-inset:pl-8 data-[inset]:pl-8", className)}
+	{...restProps}
 >
-	{@render children()}
-</DropdownMenuPrimitive.GroupHeading>
+	{@render children?.()}
+</div>

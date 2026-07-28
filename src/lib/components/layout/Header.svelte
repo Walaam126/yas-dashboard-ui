@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import InitialsAvatar from '$lib/components/shared/InitialsAvatar.svelte';
+	import SearchField from '$lib/components/shared/SearchField.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils';
 	import BellIcon from '@lucide/svelte/icons/bell';
@@ -25,67 +28,61 @@
 </script>
 
 <header
-	class="sticky top-0 z-40 flex h-16 items-center gap-2 border-b border-beige-border bg-cream/90 px-4 backdrop-blur-sm sm:px-6"
+	class="bg-background/90 sticky top-0 z-40 flex h-16 items-center gap-2 border-b px-4 backdrop-blur-sm sm:px-6"
 >
-	<button
-		type="button"
-		onclick={onopenmobilenav}
-		class="flex h-9 w-9 items-center justify-center rounded-lg text-espresso hover:bg-cream-200 lg:hidden"
-	>
+	<Button variant="ghost" size="icon" onclick={onopenmobilenav} class="lg:hidden">
 		<MenuIcon class="h-5 w-5" aria-hidden="true" />
 		<span class="sr-only">Open menu</span>
-	</button>
+	</Button>
 
 	<!-- Global search: submits into the orders list, which is the busiest view. -->
 	<div class="relative max-w-md flex-1">
-		<form action={resolve('/admin/orders')} class="hidden items-center md:flex" role="search">
-			<label class="sr-only" for="global-search">Search orders, products and customers</label>
-			<SearchIcon
-				class="pointer-events-none absolute left-3 h-4 w-4 text-espresso-muted"
-				aria-hidden="true"
-			/>
-			<input
+		<form action={resolve('/admin/orders')} class="hidden md:block" role="search">
+			<SearchField
 				id="global-search"
+				label="Search orders, products and customers"
 				name="q"
-				type="search"
 				placeholder="Search orders, products, customers…"
-				class="h-9 w-full rounded-lg border border-beige-border bg-surface pr-3 pl-9 text-sm text-espresso placeholder:text-espresso-muted/60 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none"
+				inputClass="h-9"
 			/>
 		</form>
-		<button
-			type="button"
+		<Button
+			variant="ghost"
+			size="icon"
 			onclick={() => (searchOpen = !searchOpen)}
 			aria-expanded={searchOpen}
 			aria-controls="mobile-search"
-			class="flex h-9 w-9 items-center justify-center rounded-lg text-espresso hover:bg-cream-200 md:hidden"
+			class="md:hidden"
 		>
 			<SearchIcon class="h-5 w-5" aria-hidden="true" />
 			<span class="sr-only">Search</span>
-		</button>
+		</Button>
 	</div>
 
 	<div class="ml-auto flex items-center gap-1 sm:gap-2">
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger
-				class="relative flex h-9 w-9 items-center justify-center rounded-lg text-espresso hover:bg-cream-200"
-			>
-				<BellIcon class="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-				<span
-					class="absolute top-2 right-2 h-2 w-2 rounded-full bg-gold ring-2 ring-cream"
-					aria-hidden="true"
-				></span>
-				<span class="sr-only">Notifications ({notifications.length} unread)</span>
+			<DropdownMenu.Trigger>
+				{#snippet child({ props })}
+					<Button variant="ghost" size="icon" class="relative" {...props}>
+						<BellIcon class="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+						<span
+							class="bg-primary ring-background absolute top-2 right-2 h-2 w-2 rounded-full ring-2"
+							aria-hidden="true"
+						></span>
+						<span class="sr-only">Notifications ({notifications.length} unread)</span>
+					</Button>
+				{/snippet}
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content class="w-80 p-0">
+			<DropdownMenu.Content align="end" class="w-80 p-0">
 				<DropdownMenu.Group>
-					<DropdownMenu.Label>
-						<span class="text-sm font-semibold text-espresso">Notifications</span>
+					<DropdownMenu.Label class="text-foreground border-b px-4 py-2.5 text-sm font-semibold">
+						Notifications
 					</DropdownMenu.Label>
 					<div class="max-h-80 overflow-y-auto py-1">
 						{#each notifications as notification (notification.title)}
 							<DropdownMenu.Item class="flex-col items-start gap-0.5 px-4 py-2.5">
-								<span class="text-sm text-espresso">{notification.title}</span>
-								<span class="text-xs text-espresso-muted">{notification.time}</span>
+								<span class="text-sm">{notification.title}</span>
+								<span class="text-muted-foreground text-xs">{notification.time}</span>
 							</DropdownMenu.Item>
 						{/each}
 					</div>
@@ -94,33 +91,30 @@
 		</DropdownMenu.Root>
 
 		<DropdownMenu.Root bind:open={profileOpen}>
-			<DropdownMenu.Trigger
-				class="flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 hover:bg-cream-200"
-			>
-				<span
-					class="flex h-8 w-8 items-center justify-center rounded-full bg-camel font-serif text-sm font-semibold text-espresso"
-					aria-hidden="true"
-				>
-					L
-				</span>
-				<span class="hidden text-left sm:block">
-					<span class="block text-sm leading-tight font-medium text-espresso">Layla</span>
-					<span class="block text-xs leading-tight text-espresso-muted">Store Owner</span>
-				</span>
-				<ChevronDownIcon
-					class={cn(
-						'hidden h-4 w-4 text-espresso-muted transition-transform sm:block',
-						profileOpen && 'rotate-180'
-					)}
-					aria-hidden="true"
-				/>
-				<span class="sr-only">Admin profile menu</span>
+			<DropdownMenu.Trigger>
+				{#snippet child({ props })}
+					<Button variant="ghost" class="h-auto gap-2 py-1 pr-2 pl-1" {...props}>
+						<InitialsAvatar name="Layla" />
+						<span class="hidden text-left sm:block">
+							<span class="block text-sm leading-tight font-medium">Layla</span>
+							<span class="text-muted-foreground block text-xs leading-tight">Store Owner</span>
+						</span>
+						<ChevronDownIcon
+							class={cn(
+								'text-muted-foreground hidden h-4 w-4 transition-transform sm:block',
+								profileOpen && 'rotate-180'
+							)}
+							aria-hidden="true"
+						/>
+						<span class="sr-only">Admin profile menu</span>
+					</Button>
+				{/snippet}
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content class="w-52">
+			<DropdownMenu.Content align="end" class="w-52">
 				<DropdownMenu.Group>
-					<DropdownMenu.Label>
-						<span class="block text-sm font-medium text-espresso">Layla Ahmed</span>
-						<span class="block text-xs text-espresso-muted">layla@yasoutlet.bh</span>
+					<DropdownMenu.Label class="text-foreground border-b px-4 py-2.5 text-sm font-medium">
+						<span class="block">Layla Ahmed</span>
+						<span class="text-muted-foreground block text-xs font-normal">layla@yasoutlet.bh</span>
 					</DropdownMenu.Label>
 					<DropdownMenu.Item>
 						<UserIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
@@ -135,7 +129,7 @@
 						{/snippet}
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item destructive>
+					<DropdownMenu.Item variant="destructive">
 						<LogOutIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 						Sign Out
 					</DropdownMenu.Item>
@@ -148,23 +142,16 @@
 		<div
 			id="mobile-search"
 			transition:slide={{ duration: 160 }}
-			class="absolute inset-x-0 top-full border-b border-beige-border bg-cream p-3 md:hidden"
+			class="bg-background absolute inset-x-0 top-full border-b p-3 md:hidden"
 		>
-			<form action={resolve('/admin/orders')} class="relative flex items-center" role="search">
-				<label class="sr-only" for="mobile-search-input">Search</label>
-				<SearchIcon
-					class="pointer-events-none absolute left-3 h-4 w-4 text-espresso-muted"
-					aria-hidden="true"
-				/>
+			<form action={resolve('/admin/orders')} role="search">
 				<!-- The overlay exists only to expose this field, so focusing it is expected. -->
-				<!-- svelte-ignore a11y_autofocus -->
-				<input
+				<SearchField
 					id="mobile-search-input"
+					label="Search"
 					name="q"
-					type="search"
-					autofocus
 					placeholder="Search…"
-					class="h-10 w-full rounded-lg border border-beige-border bg-surface pr-3 pl-9 text-sm text-espresso focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none"
+					autofocus
 				/>
 			</form>
 		</div>

@@ -8,8 +8,8 @@
 	import EmptyState from '$lib/components/shared/EmptyState.svelte';
 	import Field from '$lib/components/shared/Field.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
-	import { Select } from '$lib/components/ui/select';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import * as NativeSelect from '$lib/components/ui/native-select';
 	import * as Table from '$lib/components/ui/table';
 	import { tourStatusUpdateSchema } from '$lib/schemas';
 	import { bhd, formatDate, statusOptions, tourStatusMap } from '$lib/utils';
@@ -57,7 +57,7 @@
 
 <a
 	href={resolve('/admin/tours')}
-	class="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-espresso-muted hover:text-espresso"
+	class="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
 >
 	<ArrowLeftIcon class="h-4 w-4" aria-hidden="true" />
 	Back to Tours
@@ -66,11 +66,11 @@
 <Card class="mb-6 overflow-hidden">
 	<div class="relative h-44 sm:h-52">
 		<img src={tour.image} alt="{tour.destination} tour cover" class="h-full w-full object-cover" />
-		<div class="absolute inset-0 bg-espresso/35" aria-hidden="true"></div>
+		<div class="absolute inset-0 bg-foreground/35" aria-hidden="true"></div>
 		<div class="absolute right-5 bottom-4 left-5">
 			<StatusBadge kind="tourStatus" value={status} />
-			<h1 class="mt-2 font-serif text-2xl font-semibold text-cream sm:text-3xl">{tour.name}</h1>
-			<p class="mt-0.5 flex items-center gap-1.5 text-sm text-cream/90">
+			<h1 class="mt-2 font-serif text-2xl font-semibold text-background sm:text-3xl">{tour.name}</h1>
+			<p class="mt-0.5 flex items-center gap-1.5 text-sm text-background/90">
 				<MapPinIcon class="h-4 w-4" aria-hidden="true" />
 				{tour.destination}
 			</p>
@@ -81,7 +81,7 @@
 <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 	<div class="space-y-6 lg:col-span-2">
 		<Card>
-			<CardHeader title="Tour Summary" />
+			<CardHeader><CardTitle level={2}>Tour Summary</CardTitle></CardHeader>
 			<p class="px-5 pt-4 text-sm text-espresso-light">{tour.description}</p>
 			<dl class="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4">
 				<DetailStat label="Order deadline" value={formatDate(tour.orderDeadline)} />
@@ -92,7 +92,7 @@
 		</Card>
 
 		<Card>
-			<CardHeader title="Customer Requests ({requests.length})" />
+			<CardHeader><CardTitle level={2}>Customer Requests ({requests.length})</CardTitle></CardHeader>
 			{#if requests.length === 0}
 				<EmptyState
 					icon={UsersIcon}
@@ -100,18 +100,20 @@
 					description="Customer requests connected to this tour will appear here."
 				/>
 			{:else}
-				<Table.Root minWidthClass="min-w-[560px]">
-					<Table.HeaderRow>
+				<Table.Root class="min-w-[560px]">
+					<Table.Header>
+					<Table.Row class="hover:bg-transparent">
 						<Table.Head class="px-5">Order</Table.Head>
 						<Table.Head>Customer</Table.Head>
 						<Table.Head>Deposit</Table.Head>
 						<Table.Head>Payment</Table.Head>
 						<Table.Head>Type</Table.Head>
-					</Table.HeaderRow>
+					</Table.Row>
+				</Table.Header>
 					<Table.Body>
 						{#each requests as order (order.id)}
 							<Table.Row>
-								<Table.Cell class="px-5 font-medium text-espresso">
+								<Table.Cell class="px-5 font-medium text-foreground">
 									<a
 										href={resolve('/admin/orders/[id]', { id: order.id })}
 										class="hover:text-gold-dark"
@@ -134,37 +136,37 @@
 
 	<div class="space-y-6">
 		<div class="grid grid-cols-2 gap-4">
-			<div class="rounded-xl border border-beige-border bg-surface p-4 shadow-card">
+			<div class="bg-card rounded-xl border p-4 shadow-sm">
 				<div
 					class="flex h-9 w-9 items-center justify-center rounded-lg bg-gold-soft text-gold-dark"
 				>
 					<UsersIcon class="h-[18px] w-[18px]" aria-hidden="true" />
 				</div>
-				<p class="mt-3 font-serif text-2xl font-semibold text-espresso">{tour.requests}</p>
-				<p class="text-xs text-espresso-muted">Requests</p>
+				<p class="mt-3 font-serif text-2xl font-semibold text-foreground">{tour.requests}</p>
+				<p class="text-xs text-muted-foreground">Requests</p>
 			</div>
-			<div class="rounded-xl border border-beige-border bg-surface p-4 shadow-card">
+			<div class="bg-card rounded-xl border p-4 shadow-sm">
 				<div
 					class="flex h-9 w-9 items-center justify-center rounded-lg bg-success-soft text-success"
 				>
 					<CoinsIcon class="h-[18px] w-[18px]" aria-hidden="true" />
 				</div>
-				<p class="mt-3 font-serif text-2xl font-semibold text-espresso">{bhd(tour.deposits)}</p>
-				<p class="text-xs text-espresso-muted">Deposits collected</p>
+				<p class="mt-3 font-serif text-2xl font-semibold text-foreground">{bhd(tour.deposits)}</p>
+				<p class="text-xs text-muted-foreground">Deposits collected</p>
 			</div>
 		</div>
 
 		<Card>
-			<CardHeader title="Update Status" />
+			<CardHeader><CardTitle level={2}>Update Status</CardTitle></CardHeader>
 			<CardContent>
 				<form method="POST" action="?/updateStatus" use:enhance>
 					<Field id="tour-status-update" label="Tour status" errors={$errors.status}>
 						{#snippet control(props)}
-							<Select {...props} name="status" bind:value={$values.status}>
+							<NativeSelect.Root {...props} name="status" bind:value={$values.status}>
 								{#each statusChoices as choice (choice.value)}
-									<option value={choice.value}>{choice.label}</option>
+									<NativeSelect.Option value={choice.value}>{choice.label}</NativeSelect.Option>
 								{/each}
-							</Select>
+							</NativeSelect.Root>
 						{/snippet}
 					</Field>
 					<Button type="submit" class="mt-3 w-full" disabled={$submitting}>
@@ -172,7 +174,7 @@
 					</Button>
 				</form>
 				<Button
-					variant="secondary"
+					variant="outline"
 					class="mt-2 w-full"
 					onclick={() => toast('Editing tour details is not available in this mockup')}
 				>

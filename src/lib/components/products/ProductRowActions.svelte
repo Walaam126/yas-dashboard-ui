@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Product } from '$lib/types';
 	import { resolve } from '$app/paths';
+	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import MoreHorizontalIcon from '@lucide/svelte/icons/ellipsis';
@@ -18,13 +19,15 @@
 </script>
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger
-		class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-espresso-muted transition-colors hover:bg-cream-200 hover:text-espresso"
-	>
-		<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
-		<span class="sr-only">Actions for {product.name}</span>
+	<DropdownMenu.Trigger>
+		{#snippet child({ props })}
+			<Button variant="ghost" size="icon-sm" class="text-muted-foreground shrink-0" {...props}>
+				<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
+				<span class="sr-only">Actions for {product.name}</span>
+			</Button>
+		{/snippet}
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content>
+	<DropdownMenu.Content align="end">
 		<DropdownMenu.Item>
 			{#snippet child({ props })}
 				<a href={resolve('/admin/products/[id]', { id: product.id })} {...props}>
@@ -41,7 +44,7 @@
 			<EyeOffIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 			Hide
 		</DropdownMenu.Item>
-		<DropdownMenu.Item destructive onSelect={() => ondelete(product)}>
+		<DropdownMenu.Item variant="destructive" onSelect={() => ondelete(product)}>
 			<Trash2Icon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 			Delete
 		</DropdownMenu.Item>

@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { Select } from '$lib/components/ui/select';
+	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { cn } from '$lib/utils';
 
 	type Props = {
@@ -34,16 +34,16 @@
 {#each filters as filter (filter.key)}
 	<div class={cn(itemClass)}>
 		<label class="sr-only" for="{idPrefix}-{filter.key}">{filter.label}</label>
-		<Select
+		<NativeSelect.Root
 			id="{idPrefix}-{filter.key}"
 			value={values[filter.key] ?? 'all'}
 			onchange={(event) => onchange(filter.key, event.currentTarget.value)}
 			class="min-w-[140px]"
 		>
-			<option value="all">{filter.label}: All</option>
+			<NativeSelect.Option value="all">{filter.label}: All</NativeSelect.Option>
 			{#each filter.options as option (option.value)}
-				<option value={option.value}>{option.label}</option>
+				<NativeSelect.Option value={option.value}>{option.label}</NativeSelect.Option>
 			{/each}
-		</Select>
+		</NativeSelect.Root>
 	</div>
 {/each}

@@ -1,16 +1,15 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLTdAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
+	import { cn, type WithElementRef } from "$lib/utils.js";
+	import type { HTMLTdAttributes } from "svelte/elements";
 
-	type Props = {
-		class?: string;
-		children?: Snippet;
-	} & Omit<HTMLTdAttributes, 'class' | 'children'>;
-
-	let { class: className, children, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLTdAttributes> = $props();
 </script>
 
-<td class={cn('px-3 py-3', className)} {...rest}>
-	{#if children}{@render children()}{/if}
+<td bind:this={ref} data-slot="table-cell" class={cn("px-3 py-3 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0", className)} {...restProps}>
+	{@render children?.()}
 </td>

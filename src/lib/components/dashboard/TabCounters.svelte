@@ -35,15 +35,15 @@
 			class={cn(
 				'flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
 				isActive
-					? 'bg-espresso text-cream'
-					: 'border border-beige-border bg-surface text-espresso-light hover:bg-cream-200'
+					? 'bg-foreground text-background'
+					: 'border border-border bg-card text-espresso-light hover:bg-accent'
 			)}
 		>
 			{tab.label}
 			<span
 				class={cn(
 					'rounded-full px-1.5 text-xs',
-					isActive ? 'bg-cream/20 text-cream' : 'bg-beige text-espresso-muted'
+					isActive ? 'bg-background/20 text-background' : 'bg-muted text-muted-foreground'
 				)}
 			>
 				{tab.count}

@@ -1,7 +1,5 @@
 <script lang="ts">
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import { cn } from '$lib/utils';
 	import AlertTriangleIcon from '@lucide/svelte/icons/triangle-alert';
 
 	type Props = {
@@ -27,29 +25,22 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Content>
-		<div class="flex gap-4">
+		<AlertDialog.Header>
 			{#if destructive}
-				<div
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger-soft"
+				<AlertDialog.Media
+					class="bg-danger-soft text-danger mb-0 size-10 rounded-full *:[svg:not([class*='size-'])]:size-5"
 				>
-					<AlertTriangleIcon class="h-5 w-5 text-danger" aria-hidden="true" />
-				</div>
+					<AlertTriangleIcon aria-hidden="true" />
+				</AlertDialog.Media>
 			{/if}
-			<div>
-				<AlertDialog.Title>{title}</AlertDialog.Title>
-				<AlertDialog.Description>{description}</AlertDialog.Description>
-			</div>
-		</div>
-		<div class="mt-6 flex justify-end gap-3">
-			<AlertDialog.Cancel class={cn(buttonVariants({ variant: 'secondary' }))}>
-				{cancelLabel}
-			</AlertDialog.Cancel>
-			<AlertDialog.Action
-				class={cn(buttonVariants({ variant: destructive ? 'danger' : 'primary' }))}
-				onclick={onconfirm}
-			>
+			<AlertDialog.Title class="font-serif text-xl font-semibold">{title}</AlertDialog.Title>
+			<AlertDialog.Description>{description}</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>{cancelLabel}</AlertDialog.Cancel>
+			<AlertDialog.Action variant={destructive ? 'destructive' : 'default'} onclick={onconfirm}>
 				{confirmLabel}
 			</AlertDialog.Action>
-		</div>
+		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

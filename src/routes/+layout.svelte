@@ -20,4 +20,8 @@
 
 {@render children()}
 
-<Toaster />
+<!--
+	The admin is a light-only surface, so the toaster is pinned to the light theme
+	rather than following mode-watcher. Its colours come from the popover tokens.
+-->
+<Toaster position="bottom-right" theme="light" />

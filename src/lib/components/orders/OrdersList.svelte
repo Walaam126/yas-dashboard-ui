@@ -44,13 +44,13 @@
 
 {#if selected.length > 0}
 	<div
-		class="mb-3 flex items-center justify-between gap-3 rounded-lg border border-gold/30 bg-gold-soft px-4 py-2.5"
+		class="border-primary/30 bg-gold-soft mb-3 flex items-center justify-between gap-3 rounded-lg border px-4 py-2.5"
 	>
-		<span class="text-sm font-medium text-gold-dark">{selected.length} selected</span>
+		<span class="text-gold-dark text-sm font-medium">{selected.length} selected</span>
 		<div class="flex gap-2">
 			<Button
 				size="sm"
-				variant="secondary"
+				variant="outline"
 				onclick={() => {
 					toast.success(`${selected.length} orders exported`);
 					selected = [];
@@ -58,7 +58,7 @@
 			>
 				Export
 			</Button>
-			<Button size="sm" variant="secondary" onclick={() => (selected = [])}>Clear</Button>
+			<Button size="sm" variant="outline" onclick={() => (selected = [])}>Clear</Button>
 		</div>
 	</div>
 {/if}
@@ -73,29 +73,31 @@
 	{:else}
 		<!-- Desktop table -->
 		<div class="hidden md:block">
-			<Table.Root>
-				<Table.HeaderRow>
-					<Table.Head class="w-10 px-4">
-						<Checkbox
-							checked={allSelected}
-							indeterminate={selected.length > 0 && !allSelected}
-							onCheckedChange={toggleAll}
-							aria-label="Select all orders"
-						/>
-					</Table.Head>
-					<Table.Head>Order</Table.Head>
-					<Table.Head>Customer</Table.Head>
-					<Table.Head>Type</Table.Head>
-					<Table.Head>Items</Table.Head>
-					<Table.Head>Total</Table.Head>
-					<Table.Head>Payment</Table.Head>
-					<Table.Head>Status</Table.Head>
-					<Table.Head>Date</Table.Head>
-					<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
-				</Table.HeaderRow>
+			<Table.Root class="min-w-[900px]">
+				<Table.Header>
+					<Table.Row class="hover:bg-transparent">
+						<Table.Head class="w-10 px-4">
+							<Checkbox
+								checked={allSelected}
+								indeterminate={selected.length > 0 && !allSelected}
+								onCheckedChange={toggleAll}
+								aria-label="Select all orders"
+							/>
+						</Table.Head>
+						<Table.Head>Order</Table.Head>
+						<Table.Head>Customer</Table.Head>
+						<Table.Head>Type</Table.Head>
+						<Table.Head>Items</Table.Head>
+						<Table.Head>Total</Table.Head>
+						<Table.Head>Payment</Table.Head>
+						<Table.Head>Status</Table.Head>
+						<Table.Head>Date</Table.Head>
+						<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
+					</Table.Row>
+				</Table.Header>
 				<Table.Body>
 					{#each orders as order (order.id)}
-						<Table.Row selected={selected.includes(order.id)}>
+						<Table.Row data-state={selected.includes(order.id) ? 'selected' : undefined}>
 							<Table.Cell class="px-4">
 								<Checkbox
 									checked={selected.includes(order.id)}
@@ -103,22 +105,19 @@
 									aria-label="Select {order.number}"
 								/>
 							</Table.Cell>
-							<Table.Cell class="font-medium text-espresso">
-								<a
-									href={resolve('/admin/orders/[id]', { id: order.id })}
-									class="hover:text-gold-dark"
-								>
+							<Table.Cell class="font-medium">
+								<a href={resolve('/admin/orders/[id]', { id: order.id })} class="hover:text-gold-dark">
 									{order.number}
 									<span class="sr-only">— view order details</span>
 								</a>
 							</Table.Cell>
 							<Table.Cell class="text-espresso-light">{order.customer}</Table.Cell>
 							<Table.Cell><StatusBadge kind="orderType" value={order.type} /></Table.Cell>
-							<Table.Cell class="text-espresso-muted">{order.items.length}</Table.Cell>
-							<Table.Cell class="font-medium text-espresso">{bhd(order.total)}</Table.Cell>
+							<Table.Cell class="text-muted-foreground">{order.items.length}</Table.Cell>
+							<Table.Cell class="font-medium">{bhd(order.total)}</Table.Cell>
 							<Table.Cell><StatusBadge kind="payment" value={order.payment} /></Table.Cell>
 							<Table.Cell><StatusBadge kind="orderStatus" value={order.status} /></Table.Cell>
-							<Table.Cell class="text-espresso-muted">{formatDate(order.date)}</Table.Cell>
+							<Table.Cell class="text-muted-foreground">{formatDate(order.date)}</Table.Cell>
 							<Table.Cell>
 								<OrderRowActions {order} {oncancel} />
 							</Table.Cell>
@@ -129,26 +128,26 @@
 		</div>
 
 		<!-- Mobile cards -->
-		<ul class="divide-y divide-beige-border md:hidden">
+		<ul class="divide-border divide-y md:hidden">
 			{#each orders as order (order.id)}
-				<li class="flex items-start gap-3 px-4 py-4 hover:bg-cream-100">
+				<li class="hover:bg-muted/50 flex items-start gap-3 px-4 py-4">
 					<div class="min-w-0 flex-1">
 						<div class="flex items-center justify-between gap-3">
 							<a
 								href={resolve('/admin/orders/[id]', { id: order.id })}
-								class="font-medium text-espresso hover:text-gold-dark"
+								class="hover:text-gold-dark font-medium"
 							>
 								{order.number}
 							</a>
-							<span class="font-medium text-espresso">{bhd(order.total)}</span>
+							<span class="font-medium">{bhd(order.total)}</span>
 						</div>
-						<p class="mt-1 text-sm text-espresso-light">{order.customer}</p>
+						<p class="text-espresso-light mt-1 text-sm">{order.customer}</p>
 						<div class="mt-2 flex flex-wrap items-center gap-1.5">
 							<StatusBadge kind="orderType" value={order.type} />
 							<StatusBadge kind="orderStatus" value={order.status} />
 							<StatusBadge kind="payment" value={order.payment} />
 						</div>
-						<p class="mt-2 text-xs text-espresso-muted">
+						<p class="text-muted-foreground mt-2 text-xs">
 							{formatDate(order.date)} · {order.items.length} items
 						</p>
 					</div>

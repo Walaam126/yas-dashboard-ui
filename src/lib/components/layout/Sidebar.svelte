@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { sidebarPreference } from '$lib/stores/sidebar.svelte';
 	import { cn } from '$lib/utils';
@@ -20,13 +21,13 @@
 <!-- Desktop sidebar -->
 <aside
 	class={cn(
-		'hidden shrink-0 flex-col border-r border-beige-border bg-surface transition-[width] duration-200 lg:flex',
+		'bg-card hidden shrink-0 flex-col border-r transition-[width] duration-200 lg:flex',
 		collapsed ? 'w-[76px]' : 'w-64'
 	)}
 >
 	<div
 		class={cn(
-			'flex h-16 items-center border-b border-beige-border px-4',
+			'flex h-16 items-center border-b px-4',
 			collapsed ? 'justify-center' : 'justify-between'
 		)}
 	>
@@ -35,13 +36,13 @@
 
 	<SidebarNav {collapsed} {pathname} />
 
-	<div class="border-t border-beige-border p-3">
-		<button
-			type="button"
+	<div class="border-t p-3">
+		<Button
+			variant="ghost"
 			onclick={() => sidebarPreference.toggle()}
 			aria-expanded={!collapsed}
 			class={cn(
-				'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-espresso-muted transition-colors hover:bg-cream-200 hover:text-espresso',
+				'text-muted-foreground w-full justify-start gap-3 px-3',
 				collapsed && 'justify-center px-0'
 			)}
 		>
@@ -52,22 +53,25 @@
 				<PanelLeftCloseIcon class="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
 				<span>Collapse</span>
 			{/if}
-		</button>
+		</Button>
 	</div>
 </aside>
 
 <!-- Mobile drawer -->
 <Sheet.Root bind:open={mobileOpen}>
 	<Sheet.Content
-		title="Admin navigation"
 		side="left"
-		widthClass="max-w-64"
-		bodyClass="p-0"
-		class="bg-surface lg:hidden"
+		class="bg-card gap-0 data-[side=left]:w-64 lg:hidden data-[side=left]:sm:max-w-64"
 	>
-		{#snippet heading()}
+		<Sheet.Header class="flex-row items-center justify-between border-b px-5 py-4">
 			<Logo />
-		{/snippet}
-		<SidebarNav {pathname} onnavigate={() => (mobileOpen = false)} />
+			<Sheet.Title class="sr-only">Admin navigation</Sheet.Title>
+			<Sheet.Description class="sr-only">
+				Links to every section of the YAS Outlet admin.
+			</Sheet.Description>
+		</Sheet.Header>
+		<div class="flex-1 overflow-y-auto overscroll-contain">
+			<SidebarNav {pathname} onnavigate={() => (mobileOpen = false)} />
+		</div>
 	</Sheet.Content>
 </Sheet.Root>

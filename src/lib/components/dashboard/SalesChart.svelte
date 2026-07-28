@@ -170,13 +170,13 @@
 
 	{#if hoveredPoint}
 		<div
-			class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg border border-beige-border bg-surface px-3 py-2 shadow-drawer"
+			class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-lg border border-border bg-card px-3 py-2 shadow-lg"
 			style:left="{Math.min(Math.max(hoveredPoint.x, 56), width - 56)}px"
 			style:top="{hoveredPoint.y - 12}px"
 			role="status"
 		>
-			<p class="text-xs font-medium text-espresso-muted">{hoveredPoint.day}</p>
-			<p class="text-sm font-semibold text-espresso">{bhd(hoveredPoint.value)}</p>
+			<p class="text-xs font-medium text-muted-foreground">{hoveredPoint.day}</p>
+			<p class="text-sm font-semibold text-foreground">{bhd(hoveredPoint.value)}</p>
 		</div>
 	{/if}
 

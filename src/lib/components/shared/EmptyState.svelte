@@ -16,11 +16,11 @@
 </script>
 
 <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
-	<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gold-soft">
-		<Icon class="h-6 w-6 text-gold-dark" strokeWidth={1.75} aria-hidden="true" />
+	<div class="bg-gold-soft mb-4 flex h-14 w-14 items-center justify-center rounded-full">
+		<Icon class="text-gold-dark h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
 	</div>
-	<h3 class="font-serif text-xl text-espresso">{title}</h3>
-	<p class="mt-1.5 max-w-sm text-sm text-espresso-muted">{description}</p>
+	<h3 class="text-foreground font-serif text-xl">{title}</h3>
+	<p class="text-muted-foreground mt-1.5 max-w-sm text-sm">{description}</p>
 	{#if actionLabel && actionHref}
 		<Button href={actionHref} class="mt-5">{actionLabel}</Button>
 	{:else if actionLabel && onaction}

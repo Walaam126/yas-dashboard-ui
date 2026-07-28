@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { Label } from '$lib/components/ui/label';
 	import { cn } from '$lib/utils';
 
 	type ControlProps = {
@@ -8,6 +9,14 @@
 		'aria-describedby': string | undefined;
 	};
 
+	/**
+	 * Superforms owns validation state in this app, so the field keeps its own
+	 * wiring — it hands the control its `id` and the `aria-invalid` /
+	 * `aria-describedby` pair, and renders the message Superforms produced. Only
+	 * the label is delegated to the official shadcn-svelte primitive; the
+	 * registry's `Field` set is form-library agnostic and would not connect the
+	 * messages back to the store.
+	 */
 	type Props = {
 		/** Also used as the control's `id`, so it must be unique on the page. */
 		id: string;
@@ -29,7 +38,7 @@
 
 <div class={cn('block', className)}>
 	{#if label}
-		<label for={id} class="mb-1.5 block text-sm font-medium text-espresso">{label}</label>
+		<Label for={id} class="mb-1.5 block">{label}</Label>
 	{/if}
 
 	{@render control({
@@ -39,8 +48,8 @@
 	})}
 
 	{#if invalid}
-		<p id={errorId} class="mt-1 text-xs font-medium text-danger">{errors?.[0]}</p>
+		<p id={errorId} class="text-danger mt-1 text-xs font-medium">{errors?.[0]}</p>
 	{:else if hint}
-		<p id={hintId} class="mt-1 text-xs text-espresso-muted">{hint}</p>
+		<p id={hintId} class="text-muted-foreground mt-1 text-xs">{hint}</p>
 	{/if}
 </div>

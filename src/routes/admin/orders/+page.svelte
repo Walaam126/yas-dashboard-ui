@@ -90,7 +90,7 @@
 	description="Manage and fulfil every order in one place."
 >
 	{#snippet actions()}
-		<Button variant="secondary" onclick={() => toast.success('Orders exported to CSV')}>
+		<Button variant="outline" onclick={() => toast.success('Orders exported to CSV')}>
 			<DownloadIcon class="h-4 w-4" aria-hidden="true" />
 			Export
 		</Button>

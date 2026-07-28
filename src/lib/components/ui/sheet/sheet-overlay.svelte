@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import { Dialog as SheetPrimitive } from 'bits-ui';
+	import { Dialog as SheetPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
 
-	type Props = { class?: string } & Omit<SheetPrimitive.OverlayProps, 'class'>;
-
-	let { class: className, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: SheetPrimitive.OverlayProps = $props();
 </script>
 
 <SheetPrimitive.Overlay
-	class={cn(
-		'fixed inset-0 z-50 bg-espresso/40 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in',
-		className
-	)}
-	{...rest}
+	bind:ref
+	data-slot="sheet-overlay"
+	class={cn("bg-foreground/40 fixed inset-0 z-50", className)}
+	{...restProps}
 />

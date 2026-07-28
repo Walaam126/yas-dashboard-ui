@@ -13,8 +13,8 @@
 </script>
 
 <div class="flex items-center justify-between gap-3">
-	<span class="text-espresso-muted">{label}</span>
-	<span class={cn('font-medium', tone === 'green' ? 'text-success' : 'text-espresso')}>
+	<span class="text-muted-foreground">{label}</span>
+	<span class={cn('font-medium', tone === 'green' ? 'text-success' : 'text-foreground')}>
 		{#if children}{@render children()}{:else}{value}{/if}
 	</span>
 </div>

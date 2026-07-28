@@ -3,7 +3,7 @@
 	import type { SuperForm } from 'sveltekit-superforms';
 	import Field from '$lib/components/shared/Field.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { Select } from '$lib/components/ui/select';
+	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { untrack } from 'svelte';
 
@@ -39,13 +39,13 @@
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 		<Field id="discount-type" label="Discount type" errors={$errors.type}>
 			{#snippet control(props)}
-				<Select {...props} name="type" bind:value={$values.type}>
-					<option value="percentage">Percentage</option>
-					<option value="fixed">Fixed Amount</option>
-					<option value="product">Product-specific</option>
-					<option value="category">Category</option>
-					<option value="promo">Promo Code</option>
-				</Select>
+				<NativeSelect.Root {...props} name="type" bind:value={$values.type}>
+					<NativeSelect.Option value="percentage">Percentage</NativeSelect.Option>
+					<NativeSelect.Option value="fixed">Fixed Amount</NativeSelect.Option>
+					<NativeSelect.Option value="product">Product-specific</NativeSelect.Option>
+					<NativeSelect.Option value="category">Category</NativeSelect.Option>
+					<NativeSelect.Option value="promo">Promo Code</NativeSelect.Option>
+				</NativeSelect.Root>
 			{/snippet}
 		</Field>
 
@@ -70,14 +70,14 @@
 			errors={$errors.scope}
 		>
 			{#snippet control(props)}
-				<Select {...props} name="scope" bind:value={$values.scope}>
-					<option value="all">
+				<NativeSelect.Root {...props} name="scope" bind:value={$values.scope}>
+					<NativeSelect.Option value="all">
 						All {$values.type === 'product' ? 'products' : 'categories'}
-					</option>
-					<option value="Women">Women</option>
-					<option value="Men">Men</option>
-					<option value="Kids">Kids</option>
-				</Select>
+					</NativeSelect.Option>
+					<NativeSelect.Option value="Women">Women</NativeSelect.Option>
+					<NativeSelect.Option value="Men">Men</NativeSelect.Option>
+					<NativeSelect.Option value="Kids">Kids</NativeSelect.Option>
+				</NativeSelect.Root>
 			{/snippet}
 		</Field>
 	{/if}
@@ -124,11 +124,11 @@
 	</div>
 
 	<div
-		class="flex items-center justify-between gap-3 rounded-lg border border-beige-border bg-cream-100 px-3 py-3"
+		class="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-3"
 	>
 		<div>
-			<p class="text-sm font-medium text-espresso">Active</p>
-			<p class="text-xs text-espresso-muted">Enable this discount immediately.</p>
+			<p class="text-sm font-medium text-foreground">Active</p>
+			<p class="text-xs text-muted-foreground">Enable this discount immediately.</p>
 		</div>
 		<Switch name="active" bind:checked={$values.active} aria-label="Active" />
 	</div>

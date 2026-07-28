@@ -1,16 +1,15 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLThAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
+	import { cn, type WithElementRef } from "$lib/utils.js";
+	import type { HTMLThAttributes } from "svelte/elements";
 
-	type Props = {
-		class?: string;
-		children?: Snippet;
-	} & Omit<HTMLThAttributes, 'class' | 'children'>;
-
-	let { class: className, children, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLThAttributes> = $props();
 </script>
 
-<th class={cn('px-3 py-3 font-medium', className)} scope="col" {...rest}>
-	{#if children}{@render children()}{/if}
+<th bind:this={ref} data-slot="table-head" class={cn("text-muted-foreground px-3 py-3 text-left align-middle text-xs font-medium tracking-wide uppercase whitespace-nowrap [&:has([role=checkbox])]:pr-0", className)} {...restProps}>
+	{@render children?.()}
 </th>
