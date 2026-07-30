@@ -18,7 +18,10 @@ export const load: PageServerLoad = async ({ url }) => {
 		editing: editing ?? null,
 		form: await superValidate(
 			editing ? discountToForm(editing) : emptyDiscountForm(),
-			zod4(discountSchema)
+			zod4(discountSchema),
+			{
+				errors: false
+			}
 		)
 	};
 };
