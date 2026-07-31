@@ -8,10 +8,10 @@
 	import DetailRow from '$lib/components/shared/DetailRow.svelte';
 	import DetailStat from '$lib/components/shared/DetailStat.svelte';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { noteSchema, orderStatusUpdateSchema } from '$lib/schemas';
 	import { bhd, deliveryMap, formatDate, orderStatusMap, statusOptions } from '$lib/utils';
@@ -254,11 +254,12 @@
 				<form method="POST" action="?/updateStatus" use:statusEnhance>
 					<Field id="order-status" label="Order status" errors={$statusErrors.status}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="status" bind:value={$statusValues.status}>
-								{#each statusChoices as choice (choice.value)}
-									<NativeSelect.Option value={choice.value}>{choice.label}</NativeSelect.Option>
-								{/each}
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="status"
+								options={statusChoices}
+								bind:value={$statusValues.status}
+							/>
 						{/snippet}
 					</Field>
 					<Button type="submit" class="mt-3 w-full" disabled={$statusSubmitting}>

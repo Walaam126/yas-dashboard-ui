@@ -7,10 +7,10 @@
 	import { isSettingsSection, settingsSections } from '$lib/components/settings/sections';
 	import SettingsToggleRow from '$lib/components/settings/SettingsToggleRow.svelte';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -35,6 +35,19 @@
 			? (page.url.searchParams.get('section') as SettingsSection)
 			: 'store'
 	);
+
+	const currencyOptions = [
+		{ value: 'BHD', label: 'BHD — Bahraini Dinar' },
+		{ value: 'USD', label: 'USD — US Dollar' }
+	];
+	const languageOptions = [
+		{ value: 'en', label: 'English' },
+		{ value: 'ar', label: 'العربية (Arabic)' }
+	];
+	const defaultStatusOptions = [
+		{ value: 'new', label: 'New' },
+		{ value: 'confirmed', label: 'Confirmed' }
+	];
 
 	function announce(name: string) {
 		return ({ form }: { form: { valid: boolean; message?: string } }) => {
@@ -191,18 +204,22 @@
 						</Field>
 						<Field id="store-currency" label="Currency" errors={$storeErrors.currency}>
 							{#snippet control(props)}
-								<NativeSelect.Root {...props} name="currency" bind:value={$storeValues.currency}>
-									<NativeSelect.Option value="BHD">BHD — Bahraini Dinar</NativeSelect.Option>
-									<NativeSelect.Option value="USD">USD — US Dollar</NativeSelect.Option>
-								</NativeSelect.Root>
+								<SelectField
+									{...props}
+									name="currency"
+									options={currencyOptions}
+									bind:value={$storeValues.currency}
+								/>
 							{/snippet}
 						</Field>
 						<Field id="store-language" label="Default language" errors={$storeErrors.language}>
 							{#snippet control(props)}
-								<NativeSelect.Root {...props} name="language" bind:value={$storeValues.language}>
-									<NativeSelect.Option value="en">English</NativeSelect.Option>
-									<NativeSelect.Option value="ar">العربية (Arabic)</NativeSelect.Option>
-								</NativeSelect.Root>
+								<SelectField
+									{...props}
+									name="language"
+									options={languageOptions}
+									bind:value={$storeValues.language}
+								/>
 							{/snippet}
 						</Field>
 						<Field
@@ -329,10 +346,12 @@
 							errors={$orderErrors.defaultStatus}
 						>
 							{#snippet control(props)}
-								<NativeSelect.Root {...props} name="defaultStatus" bind:value={$orderValues.defaultStatus}>
-									<NativeSelect.Option value="new">New</NativeSelect.Option>
-									<NativeSelect.Option value="confirmed">Confirmed</NativeSelect.Option>
-								</NativeSelect.Root>
+								<SelectField
+									{...props}
+									name="defaultStatus"
+									options={defaultStatusOptions}
+									bind:value={$orderValues.defaultStatus}
+								/>
 							{/snippet}
 						</Field>
 						<Field

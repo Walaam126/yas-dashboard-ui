@@ -2,8 +2,8 @@
 	import type { TourFormValues } from '$lib/schemas';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import PlusIcon from '@lucide/svelte/icons/plus';
@@ -112,10 +112,15 @@
 
 	<Field id="tour-status" label="Status" errors={$errors.status}>
 		{#snippet control(props)}
-			<NativeSelect.Root {...props} name="status" bind:value={$values.status}>
-				<NativeSelect.Option value="draft">Draft</NativeSelect.Option>
-				<NativeSelect.Option value="open">Open for Orders</NativeSelect.Option>
-			</NativeSelect.Root>
+			<SelectField
+				{...props}
+				name="status"
+				options={[
+					{ value: 'draft', label: 'Draft' },
+					{ value: 'open', label: 'Open for Orders' }
+				]}
+				bind:value={$values.status}
+			/>
 		{/snippet}
 	</Field>
 

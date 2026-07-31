@@ -7,9 +7,9 @@
 	import DetailStat from '$lib/components/shared/DetailStat.svelte';
 	import EmptyState from '$lib/components/shared/EmptyState.svelte';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import * as Table from '$lib/components/ui/table';
 	import { tourStatusUpdateSchema } from '$lib/schemas';
 	import { bhd, formatDate, statusOptions, tourStatusMap } from '$lib/utils';
@@ -162,11 +162,12 @@
 				<form method="POST" action="?/updateStatus" use:enhance>
 					<Field id="tour-status-update" label="Tour status" errors={$errors.status}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="status" bind:value={$values.status}>
-								{#each statusChoices as choice (choice.value)}
-									<NativeSelect.Option value={choice.value}>{choice.label}</NativeSelect.Option>
-								{/each}
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="status"
+								options={statusChoices}
+								bind:value={$values.status}
+							/>
 						{/snippet}
 					</Field>
 					<Button type="submit" class="mt-3 w-full" disabled={$submitting}>

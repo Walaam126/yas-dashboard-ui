@@ -2,8 +2,8 @@
 	import type { DiscountFormValues } from '$lib/schemas';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { untrack } from 'svelte';
 
@@ -16,6 +16,21 @@
 	let valueHint = $derived(
 		$values.type === 'percentage' ? 'Percentage off, e.g. 15' : 'Amount in BHD, e.g. 5.000'
 	);
+
+	const typeOptions = [
+		{ value: 'percentage', label: 'Percentage' },
+		{ value: 'fixed', label: 'Fixed Amount' },
+		{ value: 'product', label: 'Product-specific' },
+		{ value: 'category', label: 'Category' },
+		{ value: 'promo', label: 'Promo Code' }
+	];
+
+	let scopeOptions = $derived([
+		{ value: 'all', label: $values.type === 'product' ? 'All products' : 'All categories' },
+		{ value: 'Women', label: 'Women' },
+		{ value: 'Men', label: 'Men' },
+		{ value: 'Kids', label: 'Kids' }
+	]);
 </script>
 
 <div class="space-y-4">
@@ -39,13 +54,7 @@
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 		<Field id="discount-type" label="Discount type" errors={$errors.type}>
 			{#snippet control(props)}
-				<NativeSelect.Root {...props} name="type" bind:value={$values.type}>
-					<NativeSelect.Option value="percentage">Percentage</NativeSelect.Option>
-					<NativeSelect.Option value="fixed">Fixed Amount</NativeSelect.Option>
-					<NativeSelect.Option value="product">Product-specific</NativeSelect.Option>
-					<NativeSelect.Option value="category">Category</NativeSelect.Option>
-					<NativeSelect.Option value="promo">Promo Code</NativeSelect.Option>
-				</NativeSelect.Root>
+				<SelectField {...props} name="type" options={typeOptions} bind:value={$values.type} />
 			{/snippet}
 		</Field>
 
@@ -70,14 +79,7 @@
 			errors={$errors.scope}
 		>
 			{#snippet control(props)}
-				<NativeSelect.Root {...props} name="scope" bind:value={$values.scope}>
-					<NativeSelect.Option value="all">
-						All {$values.type === 'product' ? 'products' : 'categories'}
-					</NativeSelect.Option>
-					<NativeSelect.Option value="Women">Women</NativeSelect.Option>
-					<NativeSelect.Option value="Men">Men</NativeSelect.Option>
-					<NativeSelect.Option value="Kids">Kids</NativeSelect.Option>
-				</NativeSelect.Root>
+				<SelectField {...props} name="scope" options={scopeOptions} bind:value={$values.scope} />
 			{/snippet}
 		</Field>
 	{/if}

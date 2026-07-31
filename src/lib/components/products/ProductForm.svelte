@@ -4,10 +4,11 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { resolve } from '$app/paths';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import * as NativeSelect from '$lib/components/ui/native-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { productSchema } from '$lib/schemas';
@@ -58,6 +59,33 @@
 				: 'Tour Details'
 	);
 
+	const categoryOptions = [
+		{ value: 'Women', label: 'Women' },
+		{ value: 'Men', label: 'Men' },
+		{ value: 'Kids', label: 'Kids' }
+	];
+	const productTypeOptions = [
+		{ value: 'Bag', label: 'Bag' },
+		{ value: 'Shoes', label: 'Shoes' },
+		{ value: 'Clothes', label: 'Clothes' },
+		{ value: 'Accessories', label: 'Accessories' }
+	];
+	const orderTypeOptions = [
+		{ value: 'ready', label: 'Ready to Ship' },
+		{ value: 'preorder', label: 'Pre-order' },
+		{ value: 'tour', label: 'Tour' }
+	];
+	const deliveryAvailabilityOptions = [
+		{ value: 'same_day', label: 'Same-day available' },
+		{ value: 'standard', label: 'Standard (1–3 days)' }
+	];
+	const visibilityOptions = [
+		{ value: 'published', label: 'Published' },
+		{ value: 'draft', label: 'Draft' },
+		{ value: 'hidden', label: 'Hidden' }
+	];
+	let tourOptions = $derived(tours.map((tour) => ({ value: tour.id, label: tour.name })));
+
 	function addImage() {
 		if (galleryOptions.length === 0) return;
 		gallery = [...gallery, galleryOptions[nextImage % galleryOptions.length]];
@@ -93,13 +121,12 @@
 	</div>
 
 	{#if $allErrors.length > 0}
-		<div
-			class="mb-6 rounded-lg border border-danger-border bg-danger-soft px-4 py-3 text-sm text-danger"
-			role="alert"
-		>
-			Please fix {$allErrors.length}
-			{$allErrors.length === 1 ? 'field' : 'fields'} below before saving.
-		</div>
+		<Alert.Root class="mb-6 border-danger-border bg-danger-soft text-danger">
+			<Alert.Description class="text-danger">
+				Please fix {$allErrors.length}
+				{$allErrors.length === 1 ? 'field' : 'fields'} below before saving.
+			</Alert.Description>
+		</Alert.Root>
 	{/if}
 
 	<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -131,32 +158,34 @@
 
 					<Field id="product-category" label="Category" errors={$errors.category}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="category" bind:value={$values.category}>
-								<NativeSelect.Option value="Women">Women</NativeSelect.Option>
-								<NativeSelect.Option value="Men">Men</NativeSelect.Option>
-								<NativeSelect.Option value="Kids">Kids</NativeSelect.Option>
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="category"
+								options={categoryOptions}
+								bind:value={$values.category}
+							/>
 						{/snippet}
 					</Field>
 
 					<Field id="product-type" label="Product type" errors={$errors.productType}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="productType" bind:value={$values.productType}>
-								<NativeSelect.Option value="Bag">Bag</NativeSelect.Option>
-								<NativeSelect.Option value="Shoes">Shoes</NativeSelect.Option>
-								<NativeSelect.Option value="Clothes">Clothes</NativeSelect.Option>
-								<NativeSelect.Option value="Accessories">Accessories</NativeSelect.Option>
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="productType"
+								options={productTypeOptions}
+								bind:value={$values.productType}
+							/>
 						{/snippet}
 					</Field>
 
 					<Field id="product-order-type" label="Order type" errors={$errors.orderType}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="orderType" bind:value={$values.orderType}>
-								<NativeSelect.Option value="ready">Ready to Ship</NativeSelect.Option>
-								<NativeSelect.Option value="preorder">Pre-order</NativeSelect.Option>
-								<NativeSelect.Option value="tour">Tour</NativeSelect.Option>
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="orderType"
+								options={orderTypeOptions}
+								bind:value={$values.orderType}
+							/>
 						{/snippet}
 					</Field>
 
@@ -385,14 +414,12 @@
 							errors={$errors.deliveryAvailability}
 						>
 							{#snippet control(props)}
-								<NativeSelect.Root
+								<SelectField
 									{...props}
 									name="deliveryAvailability"
+									options={deliveryAvailabilityOptions}
 									bind:value={$values.deliveryAvailability}
-								>
-									<NativeSelect.Option value="same_day">Same-day available</NativeSelect.Option>
-									<NativeSelect.Option value="standard">Standard (1–3 days)</NativeSelect.Option>
-								</NativeSelect.Root>
+								/>
 							{/snippet}
 						</Field>
 					{:else if $values.orderType === 'preorder'}
@@ -459,12 +486,13 @@
 					{:else}
 						<Field id="product-tour" label="Connected tour" errors={$errors.tourId}>
 							{#snippet control(props)}
-								<NativeSelect.Root {...props} name="tourId" bind:value={$values.tourId}>
-									<NativeSelect.Option value="">Choose a tour…</NativeSelect.Option>
-									{#each tours as tour (tour.id)}
-										<NativeSelect.Option value={tour.id}>{tour.name}</NativeSelect.Option>
-									{/each}
-								</NativeSelect.Root>
+								<SelectField
+									{...props}
+									name="tourId"
+									options={tourOptions}
+									placeholder="Choose a tour…"
+									bind:value={$values.tourId}
+								/>
 							{/snippet}
 						</Field>
 						<Field
@@ -523,11 +551,12 @@
 				<div class="space-y-4 p-5">
 					<Field id="product-visibility" label="Status" errors={$errors.visibility}>
 						{#snippet control(props)}
-							<NativeSelect.Root {...props} name="visibility" bind:value={$values.visibility}>
-								<NativeSelect.Option value="published">Published</NativeSelect.Option>
-								<NativeSelect.Option value="draft">Draft</NativeSelect.Option>
-								<NativeSelect.Option value="hidden">Hidden</NativeSelect.Option>
-							</NativeSelect.Root>
+							<SelectField
+								{...props}
+								name="visibility"
+								options={visibilityOptions}
+								bind:value={$values.visibility}
+							/>
 						{/snippet}
 					</Field>
 					<div

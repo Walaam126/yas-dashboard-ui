@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LucideIcon } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button';
+	import * as Empty from '$lib/components/ui/empty';
 
 	type Props = {
 		icon: LucideIcon;
@@ -15,15 +16,25 @@
 	let { icon: Icon, title, description, actionLabel, actionHref, onaction }: Props = $props();
 </script>
 
-<div class="flex flex-col items-center justify-center px-6 py-16 text-center">
-	<div class="bg-gold-soft mb-4 flex h-14 w-14 items-center justify-center rounded-full">
-		<Icon class="text-gold-dark h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
-	</div>
-	<h3 class="text-foreground font-serif text-xl">{title}</h3>
-	<p class="text-muted-foreground mt-1.5 max-w-sm text-sm">{description}</p>
+<!--
+	Structure comes from the official Empty primitives; the classes keep the
+	mockup's spacing and the gold medallion the registry default does not have.
+-->
+<Empty.Root class="gap-0 px-6 py-16">
+	<Empty.Header class="gap-0">
+		<Empty.Media class="bg-gold-soft mb-4 size-14 rounded-full">
+			<Icon class="text-gold-dark h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+		</Empty.Media>
+		<Empty.Title class="text-foreground font-serif text-xl">{title}</Empty.Title>
+		<Empty.Description class="mt-1.5 max-w-sm">{description}</Empty.Description>
+	</Empty.Header>
 	{#if actionLabel && actionHref}
-		<Button href={actionHref} class="mt-5">{actionLabel}</Button>
+		<Empty.Content class="mt-5">
+			<Button href={actionHref}>{actionLabel}</Button>
+		</Empty.Content>
 	{:else if actionLabel && onaction}
-		<Button class="mt-5" onclick={onaction}>{actionLabel}</Button>
+		<Empty.Content class="mt-5">
+			<Button onclick={onaction}>{actionLabel}</Button>
+		</Empty.Content>
 	{/if}
-</div>
+</Empty.Root>
