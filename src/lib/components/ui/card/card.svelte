@@ -1,19 +1,22 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils';
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
 
-	type Props = {
-		class?: string;
-		children: Snippet;
-	} & Omit<HTMLAttributes<HTMLDivElement>, 'class' | 'children'>;
-
-	let { class: className, children, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		size = "default",
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & { size?: "default" | "sm" } = $props();
 </script>
 
 <div
-	class={cn('rounded-xl border border-beige-border bg-surface shadow-card', className)}
-	{...rest}
+	bind:this={ref}
+	data-slot="card"
+	data-size={size}
+	class={cn("bg-card text-card-foreground overflow-hidden rounded-xl border text-sm shadow-sm [--card-spacing:--spacing(5)] data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col", className)}
+	{...restProps}
 >
-	{@render children()}
+	{@render children?.()}
 </div>

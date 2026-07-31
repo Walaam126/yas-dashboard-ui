@@ -95,3 +95,17 @@ export const customers: Customer[] = [
 export function findCustomer(id: string): Customer | undefined {
 	return customers.find((customer) => customer.id === id);
 }
+
+/**
+ * Mock-only: a customer added while writing an order joins the in-memory
+ * directory so the order's customer link resolves. Nothing is persisted.
+ */
+export function addCustomer(customer: Customer): Customer {
+	customers.unshift(customer);
+	return customer;
+}
+
+/** `c-9` — the next free id in the mock directory. */
+export function nextCustomerId(): string {
+	return `c-${customers.length + 1}`;
+}

@@ -8,6 +8,6 @@
 </script>
 
 <div>
-	<dt class="text-xs text-espresso-muted">{label}</dt>
-	<dd class="mt-0.5 font-medium text-espresso">{value}</dd>
+	<dt class="text-xs text-muted-foreground">{label}</dt>
+	<dd class="mt-0.5 font-medium text-foreground">{value}</dd>
 </div>

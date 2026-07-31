@@ -1,6 +1,6 @@
 <script lang="ts">
+	import SearchField from '$lib/components/shared/SearchField.svelte';
 	import { cn } from '$lib/utils';
-	import SearchIcon from '@lucide/svelte/icons/search';
 
 	type Props = {
 		value: string;
@@ -40,21 +40,15 @@
 	}
 </script>
 
-<search class={cn('relative', className)}>
+<search class={cn(className)}>
 	<form onsubmit={handleSubmit} role="search">
-		<label class="sr-only" for="{name}-search">{label}</label>
-		<SearchIcon
-			class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-espresso-muted"
-			aria-hidden="true"
-		/>
-		<input
+		<SearchField
 			id="{name}-search"
+			{label}
 			{name}
-			type="search"
+			{placeholder}
 			value={draft}
 			oninput={handleInput}
-			{placeholder}
-			class="h-10 w-full rounded-lg border border-beige-border bg-surface pr-3 pl-9 text-sm text-espresso transition-colors placeholder:text-espresso-muted/60 focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none"
 		/>
 	</form>
 </search>

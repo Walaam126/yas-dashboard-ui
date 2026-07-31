@@ -62,11 +62,13 @@
 	</div>
 
 	<div class="flex items-center gap-2 lg:ml-auto">
-		<Button variant="secondary" class={triggerClass} onclick={() => (drawerOpen = true)}>
+		<Button variant="outline" class={triggerClass} onclick={() => (drawerOpen = true)}>
 			<SlidersHorizontalIcon class="h-4 w-4" aria-hidden="true" />
 			Filters
 			{#if activeCount > 0}
-				<span class="ml-1 rounded-full bg-gold px-1.5 text-xs text-white">{activeCount}</span>
+				<span class="bg-primary text-primary-foreground ml-1 rounded-full px-1.5 text-xs">
+					{activeCount}
+				</span>
 			{/if}
 		</Button>
 		{#if trailing}
@@ -76,24 +78,30 @@
 </div>
 
 <Sheet.Root bind:open={drawerOpen}>
-	<Sheet.Content title="Filters" side="bottom">
-		<div class="space-y-4">
+	<Sheet.Content side="bottom" class="bg-background max-h-[85vh] gap-0 rounded-t-2xl">
+		<Sheet.Header class="bg-card shrink-0 border-b px-5 py-4">
+			<Sheet.Title class="font-serif text-xl font-semibold">Filters</Sheet.Title>
+			<Sheet.Description class="sr-only">
+				Narrow the list down by the options below.
+			</Sheet.Description>
+		</Sheet.Header>
+
+		<div class="flex-1 space-y-4 overflow-y-auto overscroll-contain p-5">
 			<FilterControls {filters} {values} {onchange} idPrefix="drawer-filter" itemClass="block" />
 		</div>
-		{#snippet footer()}
-			<div class="flex gap-3">
-				<Button
-					variant="secondary"
-					class="flex-1"
-					onclick={() => {
-						onreset();
-						drawerOpen = false;
-					}}
-				>
-					Reset
-				</Button>
-				<Button class="flex-1" onclick={() => (drawerOpen = false)}>Apply</Button>
-			</div>
-		{/snippet}
+
+		<Sheet.Footer class="bg-card shrink-0 flex-row gap-3 border-t px-5 py-4">
+			<Button
+				variant="outline"
+				class="flex-1"
+				onclick={() => {
+					onreset();
+					drawerOpen = false;
+				}}
+			>
+				Reset
+			</Button>
+			<Button class="flex-1" onclick={() => (drawerOpen = false)}>Apply</Button>
+		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

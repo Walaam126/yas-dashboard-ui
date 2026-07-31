@@ -78,8 +78,9 @@
 		{:else}
 			<!-- Desktop table -->
 			<div class="hidden md:block">
-				<Table.Root minWidthClass="min-w-[820px]">
-					<Table.HeaderRow>
+				<Table.Root class="min-w-[820px]">
+					<Table.Header>
+					<Table.Row class="hover:bg-transparent">
 						<Table.Head class="px-5">Name / Code</Table.Head>
 						<Table.Head>Type</Table.Head>
 						<Table.Head>Value</Table.Head>
@@ -87,24 +88,25 @@
 						<Table.Head>Dates</Table.Head>
 						<Table.Head>Status</Table.Head>
 						<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
-					</Table.HeaderRow>
+					</Table.Row>
+				</Table.Header>
 					<Table.Body>
 						{#each discounts as discount (discount.id)}
 							<Table.Row>
 								<Table.Cell class="px-5">
-									<p class="font-medium text-espresso">{discount.name}</p>
-									<code class="rounded bg-beige px-1.5 py-0.5 text-xs text-espresso-light">
+									<p class="font-medium text-foreground">{discount.name}</p>
+									<code class="rounded bg-muted px-1.5 py-0.5 text-xs text-espresso-light">
 										{discount.code}
 									</code>
 								</Table.Cell>
 								<Table.Cell class="text-espresso-light">
 									{discountTypeMap[discount.type]}
 								</Table.Cell>
-								<Table.Cell class="font-medium text-espresso">{discount.value}</Table.Cell>
+								<Table.Cell class="font-medium text-foreground">{discount.value}</Table.Cell>
 								<Table.Cell class="text-espresso-light">
 									{discount.used} / {discount.limit}
 								</Table.Cell>
-								<Table.Cell class="text-espresso-muted">
+								<Table.Cell class="text-muted-foreground">
 									{formatDate(discount.start)} – {formatDate(discount.end)}
 								</Table.Cell>
 								<Table.Cell>
@@ -112,13 +114,20 @@
 								</Table.Cell>
 								<Table.Cell>
 									<DropdownMenu.Root>
-										<DropdownMenu.Trigger
-											class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-espresso-muted transition-colors hover:bg-cream-200 hover:text-espresso"
-										>
-											<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
-											<span class="sr-only">Actions for {discount.name}</span>
+										<DropdownMenu.Trigger>
+											{#snippet child({ props })}
+												<Button
+													variant="ghost"
+													size="icon-sm"
+													class="text-muted-foreground"
+													{...props}
+												>
+													<MoreHorizontalIcon class="h-4 w-4" aria-hidden="true" />
+													<span class="sr-only">Actions for {discount.name}</span>
+												</Button>
+											{/snippet}
 										</DropdownMenu.Trigger>
-										<DropdownMenu.Content>
+										<DropdownMenu.Content align="end">
 											<DropdownMenu.Item onSelect={() => openEdit(discount)}>
 												<PencilIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 												Edit
@@ -129,7 +138,7 @@
 												<CopyIcon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 												Duplicate
 											</DropdownMenu.Item>
-											<DropdownMenu.Item destructive onSelect={() => requestDelete(discount)}>
+											<DropdownMenu.Item variant="destructive" onSelect={() => requestDelete(discount)}>
 												<Trash2Icon class="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
 												Delete
 											</DropdownMenu.Item>
@@ -143,33 +152,33 @@
 			</div>
 
 			<!-- Mobile cards -->
-			<ul class="divide-y divide-beige-border md:hidden">
+			<ul class="divide-y divide-border md:hidden">
 				{#each discounts as discount (discount.id)}
 					<li class="p-4">
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0">
-								<p class="font-medium text-espresso">{discount.name}</p>
-								<code class="rounded bg-beige px-1.5 py-0.5 text-xs text-espresso-light">
+								<p class="font-medium text-foreground">{discount.name}</p>
+								<code class="rounded bg-muted px-1.5 py-0.5 text-xs text-espresso-light">
 									{discount.code}
 								</code>
 							</div>
 							<StatusBadge kind="discountStatus" value={discount.status} />
 						</div>
-						<div class="mt-2 flex items-center justify-between gap-3 text-sm text-espresso-muted">
+						<div class="mt-2 flex items-center justify-between gap-3 text-sm text-muted-foreground">
 							<span>{discountTypeMap[discount.type]} · {discount.value}</span>
 							<span>{discount.used}/{discount.limit} used</span>
 						</div>
 						<div class="mt-3 flex gap-2">
 							<Button
 								size="sm"
-								variant="secondary"
+								variant="outline"
 								class="flex-1"
 								onclick={() => openEdit(discount)}
 							>
 								<PencilIcon class="h-3.5 w-3.5" aria-hidden="true" />
 								Edit
 							</Button>
-							<Button size="sm" variant="danger" onclick={() => requestDelete(discount)}>
+							<Button size="sm" variant="destructive" onclick={() => requestDelete(discount)}>
 								<Trash2Icon class="h-3.5 w-3.5" aria-hidden="true" />
 								<span class="sr-only">Delete {discount.name}</span>
 							</Button>

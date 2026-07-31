@@ -1,15 +1,20 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { cn } from '$lib/utils';
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
 
-	type Props = {
-		class?: string;
-		children: Snippet;
-	};
-
-	let { class: className, children }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<div class={cn('p-5', className)}>
-	{@render children()}
+<div
+	bind:this={ref}
+	data-slot="card-content"
+	class={cn("p-(--card-spacing)", className)}
+	{...restProps}
+>
+	{@render children?.()}
 </div>

@@ -15,7 +15,11 @@ export default antfu(
 			'dist/**',
 			'coverage/**',
 			'node_modules/**',
-			'static/**'
+			'static/**',
+			// Vendored shadcn-svelte registry components. They are kept as the CLI
+			// emits them so `shadcn-svelte add` and `diff` stay meaningful; house
+			// import-ordering rules would only create churn against upstream.
+			'src/lib/components/ui/**'
 		]
 	},
 	{

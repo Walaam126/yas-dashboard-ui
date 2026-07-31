@@ -7,11 +7,12 @@
 	import { isSettingsSection, settingsSections } from '$lib/components/settings/sections';
 	import SettingsToggleRow from '$lib/components/settings/SettingsToggleRow.svelte';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Card, CardHeader } from '$lib/components/ui/card';
+	import { Card, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import { Select } from '$lib/components/ui/select';
 	import { Switch } from '$lib/components/ui/switch';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import {
 		deliverySettingsSchema,
@@ -20,7 +21,7 @@
 		paymentSettingsSchema,
 		storeSettingsSchema
 	} from '$lib/schemas';
-	import { applyParams, cn } from '$lib/utils';
+	import { applyParams } from '$lib/utils';
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
@@ -34,6 +35,19 @@
 			? (page.url.searchParams.get('section') as SettingsSection)
 			: 'store'
 	);
+
+	const currencyOptions = [
+		{ value: 'BHD', label: 'BHD — Bahraini Dinar' },
+		{ value: 'USD', label: 'USD — US Dollar' }
+	];
+	const languageOptions = [
+		{ value: 'en', label: 'English' },
+		{ value: 'ar', label: 'العربية (Arabic)' }
+	];
+	const defaultStatusOptions = [
+		{ value: 'new', label: 'New' },
+		{ value: 'confirmed', label: 'Confirmed' }
+	];
 
 	function announce(name: string) {
 		return ({ form }: { form: { valid: boolean; message?: string } }) => {
@@ -126,6 +140,13 @@
 
 	/** Each section is its own form, so the header button submits the open one. */
 	let currentFormId = $derived(`settings-${section}-form`);
+
+	// The switcher keeps the mockup's look — a gold pill rather than the default
+	// muted track — while Tabs supplies the roving-tabindex keyboard behaviour.
+	const tabsListClass =
+		'h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 lg:flex-col lg:items-stretch';
+	const tabsTriggerClass =
+		'h-auto flex-none justify-start gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium whitespace-nowrap text-espresso-light data-active:bg-gold-soft data-active:text-gold-dark data-active:shadow-none';
 </script>
 
 <svelte:head>
@@ -140,31 +161,25 @@
 	{/snippet}
 </PageHeader>
 
-<div class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
-	<nav class="flex gap-1 overflow-x-auto lg:flex-col" aria-label="Settings sections">
+<Tabs.Root
+	value={section}
+	onValueChange={(value) =>
+		applyParams(page.url, { section: value === 'store' ? null : value })}
+	orientation="vertical"
+	class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]"
+>
+	<Tabs.List class={tabsListClass} aria-label="Settings sections">
 		{#each settingsSections as item (item.key)}
-			{@const active = item.key === section}
-			<button
-				type="button"
-				onclick={() => applyParams(page.url, { section: item.key === 'store' ? null : item.key })}
-				aria-current={active ? 'page' : undefined}
-				class={cn(
-					'flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-colors',
-					active
-						? 'bg-gold-soft text-gold-dark'
-						: 'text-espresso-light hover:bg-cream-200 hover:text-espresso'
-				)}
-			>
+			<Tabs.Trigger value={item.key} class={tabsTriggerClass}>
 				<item.icon class="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
 				{item.label}
-			</button>
+			</Tabs.Trigger>
 		{/each}
-	</nav>
+	</Tabs.List>
 
-	<div>
-		{#if section === 'store'}
+	<Tabs.Content value="store">
 			<Card>
-				<CardHeader title="Store Details" />
+				<CardHeader><CardTitle level={2}>Store Details</CardTitle></CardHeader>
 				<form id="settings-store-form" method="POST" action="?/store" use:storeEnhance>
 					<div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
 						<Field id="store-name" label="Store name" errors={$storeErrors.storeName}>
@@ -189,18 +204,22 @@
 						</Field>
 						<Field id="store-currency" label="Currency" errors={$storeErrors.currency}>
 							{#snippet control(props)}
-								<Select {...props} name="currency" bind:value={$storeValues.currency}>
-									<option value="BHD">BHD — Bahraini Dinar</option>
-									<option value="USD">USD — US Dollar</option>
-								</Select>
+								<SelectField
+									{...props}
+									name="currency"
+									options={currencyOptions}
+									bind:value={$storeValues.currency}
+								/>
 							{/snippet}
 						</Field>
 						<Field id="store-language" label="Default language" errors={$storeErrors.language}>
 							{#snippet control(props)}
-								<Select {...props} name="language" bind:value={$storeValues.language}>
-									<option value="en">English</option>
-									<option value="ar">العربية (Arabic)</option>
-								</Select>
+								<SelectField
+									{...props}
+									name="language"
+									options={languageOptions}
+									bind:value={$storeValues.language}
+								/>
 							{/snippet}
 						</Field>
 						<Field
@@ -216,9 +235,11 @@
 					</div>
 				</form>
 			</Card>
-		{:else if section === 'delivery'}
+	</Tabs.Content>
+
+	<Tabs.Content value="delivery">
 			<Card>
-				<CardHeader title="Delivery" />
+				<CardHeader><CardTitle level={2}>Delivery</CardTitle></CardHeader>
 				<form id="settings-delivery-form" method="POST" action="?/delivery" use:deliveryEnhance>
 					<div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
 						<Field
@@ -274,11 +295,11 @@
 							{/snippet}
 						</Field>
 						<div
-							class="flex items-center justify-between gap-4 rounded-lg border border-beige-border bg-cream-100 px-3 py-3 sm:col-span-2"
+							class="flex items-center justify-between gap-4 rounded-lg border border-border bg-background px-3 py-3 sm:col-span-2"
 						>
 							<div>
-								<p class="text-sm font-medium text-espresso">Same-day delivery</p>
-								<p class="text-xs text-espresso-muted">
+								<p class="text-sm font-medium text-foreground">Same-day delivery</p>
+								<p class="text-xs text-muted-foreground">
 									Offer same-day delivery for eligible orders.
 								</p>
 							</div>
@@ -291,11 +312,13 @@
 					</div>
 				</form>
 			</Card>
-		{:else if section === 'payments'}
+	</Tabs.Content>
+
+	<Tabs.Content value="payments">
 			<Card>
-				<CardHeader title="Payments" />
+				<CardHeader><CardTitle level={2}>Payments</CardTitle></CardHeader>
 				<form id="settings-payments-form" method="POST" action="?/payments" use:paymentsEnhance>
-					<div class="divide-y divide-beige-border">
+					<div class="divide-y divide-border">
 						{#each $paymentValues.methods as method, index (method.name)}
 							<SettingsToggleRow
 								name={method.name}
@@ -306,13 +329,15 @@
 						{/each}
 					</div>
 				</form>
-				<p class="border-t border-beige-border p-5 text-xs text-espresso-muted">
+				<p class="border-t border-border p-5 text-xs text-muted-foreground">
 					Payment gateway connections are UI-only in this version.
 				</p>
 			</Card>
-		{:else if section === 'orders'}
+	</Tabs.Content>
+
+	<Tabs.Content value="orders">
 			<Card>
-				<CardHeader title="Order Settings" />
+				<CardHeader><CardTitle level={2}>Order Settings</CardTitle></CardHeader>
 				<form id="settings-orders-form" method="POST" action="?/orders" use:ordersEnhance>
 					<div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
 						<Field
@@ -321,10 +346,12 @@
 							errors={$orderErrors.defaultStatus}
 						>
 							{#snippet control(props)}
-								<Select {...props} name="defaultStatus" bind:value={$orderValues.defaultStatus}>
-									<option value="new">New</option>
-									<option value="confirmed">Confirmed</option>
-								</Select>
+								<SelectField
+									{...props}
+									name="defaultStatus"
+									options={defaultStatusOptions}
+									bind:value={$orderValues.defaultStatus}
+								/>
 							{/snippet}
 						</Field>
 						<Field
@@ -386,16 +413,18 @@
 					</div>
 				</form>
 			</Card>
-		{:else}
+	</Tabs.Content>
+
+	<Tabs.Content value="notifications">
 			<Card>
-				<CardHeader title="Notifications" />
+				<CardHeader><CardTitle level={2}>Notifications</CardTitle></CardHeader>
 				<form
 					id="settings-notifications-form"
 					method="POST"
 					action="?/notifications"
 					use:notificationsEnhance
 				>
-					<div class="divide-y divide-beige-border">
+					<div class="divide-y divide-border">
 						{#each notificationLabels as item (item.key)}
 							<SettingsToggleRow
 								name={item.name}
@@ -407,6 +436,5 @@
 					</div>
 				</form>
 			</Card>
-		{/if}
-	</div>
-</div>
+	</Tabs.Content>
+</Tabs.Root>

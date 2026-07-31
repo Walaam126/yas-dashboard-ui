@@ -15,8 +15,9 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import * as Table from '$lib/components/ui/table';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import { PRODUCT_FILTER_KEYS } from '$lib/data/product-filters';
-	import { activeFilterCount, applyParams, bhd, cn, formatDate } from '$lib/utils';
+	import { activeFilterCount, applyParams, bhd, formatDate } from '$lib/utils';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import LayoutGridIcon from '@lucide/svelte/icons/layout-grid';
 	import ListIcon from '@lucide/svelte/icons/list';
@@ -105,7 +106,14 @@
 		});
 	}
 
-	const viewButtonClass = 'flex h-10 w-10 items-center justify-center transition-colors';
+	const viewOptions = [
+		{ value: 'table', label: 'Table view', icon: ListIcon },
+		{ value: 'grid', label: 'Grid view', icon: LayoutGridIcon }
+	];
+
+	/** Pressed state uses the espresso fill from the mockup rather than the muted default. */
+	const viewItemClass =
+		'bg-card text-muted-foreground data-[state=on]:bg-foreground data-[state=on]:text-background aria-pressed:bg-foreground aria-pressed:text-background';
 </script>
 
 <svelte:head>
@@ -118,11 +126,11 @@
 	description="Your catalogue of bags, shoes, clothes and accessories."
 >
 	{#snippet actions()}
-		<Button variant="secondary" onclick={() => toast('CSV import started')}>
+		<Button variant="outline" onclick={() => toast('CSV import started')}>
 			<UploadIcon class="h-4 w-4" aria-hidden="true" />
 			Import
 		</Button>
-		<Button variant="secondary" onclick={() => toast.success('Catalogue exported')}>
+		<Button variant="outline" onclick={() => toast.success('Catalogue exported')}>
 			<DownloadIcon class="h-4 w-4" aria-hidden="true" />
 			Export
 		</Button>
@@ -146,40 +154,25 @@
 	onreset={resetFilters}
 >
 	{#snippet trailing()}
-		<div
-			class="flex overflow-hidden rounded-lg border border-beige-border"
-			role="group"
+		<ToggleGroup.Root
+			type="single"
+			variant="outline"
+			size="lg"
+			value={data.view}
+			onValueChange={(view) => {
+				// A single-selection group can be emptied by re-pressing the active
+				// item; the list always needs one layout, so ignore that.
+				if (view) applyParams(page.url, { view });
+			}}
 			aria-label="Product layout"
 		>
-			<button
-				type="button"
-				onclick={() => applyParams(page.url, { view: 'table' })}
-				aria-pressed={data.view === 'table'}
-				class={cn(
-					viewButtonClass,
-					data.view === 'table'
-						? 'bg-espresso text-cream'
-						: 'bg-surface text-espresso-muted hover:bg-cream-200'
-				)}
-			>
-				<ListIcon class="h-4 w-4" aria-hidden="true" />
-				<span class="sr-only">Table view</span>
-			</button>
-			<button
-				type="button"
-				onclick={() => applyParams(page.url, { view: 'grid' })}
-				aria-pressed={data.view === 'grid'}
-				class={cn(
-					viewButtonClass,
-					data.view === 'grid'
-						? 'bg-espresso text-cream'
-						: 'bg-surface text-espresso-muted hover:bg-cream-200'
-				)}
-			>
-				<LayoutGridIcon class="h-4 w-4" aria-hidden="true" />
-				<span class="sr-only">Grid view</span>
-			</button>
-		</div>
+			{#each viewOptions as option (option.value)}
+				<ToggleGroup.Item value={option.value} class={viewItemClass}>
+					<option.icon class="h-4 w-4" aria-hidden="true" />
+					<span class="sr-only">{option.label}</span>
+				</ToggleGroup.Item>
+			{/each}
+		</ToggleGroup.Root>
 	{/snippet}
 </FilterBar>
 
@@ -206,8 +199,9 @@
 		<Card>
 			<!-- Desktop table -->
 			<div class="hidden lg:block">
-				<Table.Root>
-					<Table.HeaderRow>
+				<Table.Root class="min-w-[900px]">
+					<Table.Header>
+					<Table.Row class="hover:bg-transparent">
 						<Table.Head class="px-4">Product</Table.Head>
 						<Table.Head>Category</Table.Head>
 						<Table.Head>Order Type</Table.Head>
@@ -216,7 +210,8 @@
 						<Table.Head>Visibility</Table.Head>
 						<Table.Head>Updated</Table.Head>
 						<Table.Head class="w-10"><span class="sr-only">Actions</span></Table.Head>
-					</Table.HeaderRow>
+					</Table.Row>
+				</Table.Header>
 					<Table.Body>
 						{#each products as product (product.id)}
 							<Table.Row>
@@ -225,17 +220,17 @@
 										<img
 											src={product.image}
 											alt={product.name}
-											class="h-11 w-11 rounded-lg border border-beige-border object-cover"
+											class="h-11 w-11 rounded-lg border border-border object-cover"
 											loading="lazy"
 										/>
 										<div>
 											<a
 												href={resolve('/admin/products/[id]', { id: product.id })}
-												class="font-medium text-espresso hover:text-gold-dark"
+												class="font-medium text-foreground hover:text-gold-dark"
 											>
 												{product.name}
 											</a>
-											<p class="text-xs text-espresso-muted">
+											<p class="text-xs text-muted-foreground">
 												{product.brand} · {product.sku}
 											</p>
 										</div>
@@ -248,26 +243,26 @@
 								<Table.Cell>
 									{#if product.salePrice}
 										<span class="flex flex-col">
-											<span class="font-medium text-espresso">{bhd(product.salePrice)}</span>
-											<span class="text-xs text-espresso-muted line-through">
+											<span class="font-medium text-foreground">{bhd(product.salePrice)}</span>
+											<span class="text-xs text-muted-foreground line-through">
 												{bhd(product.price)}
 											</span>
 										</span>
 									{:else}
-										<span class="font-medium text-espresso">{bhd(product.price)}</span>
+										<span class="font-medium text-foreground">{bhd(product.price)}</span>
 									{/if}
 								</Table.Cell>
 								<Table.Cell>
 									<div class="flex flex-col gap-0.5">
 										<StatusBadge kind="stock" value={product.stockStatus} />
 										{#if product.stockStatus !== 'not_tracked'}
-											<span class="text-xs text-espresso-muted">{product.stock} available</span>
+											<span class="text-xs text-muted-foreground">{product.stock} available</span>
 										{/if}
 									</div>
 								</Table.Cell>
 								<Table.Cell><StatusBadge kind="visibility" value={product.visibility} /></Table.Cell
 								>
-								<Table.Cell class="text-espresso-muted">{formatDate(product.updated)}</Table.Cell>
+								<Table.Cell class="text-muted-foreground">{formatDate(product.updated)}</Table.Cell>
 								<Table.Cell>
 									<ProductRowActions {product} ondelete={requestDelete} />
 								</Table.Cell>
@@ -278,20 +273,20 @@
 			</div>
 
 			<!-- Mobile cards -->
-			<ul class="divide-y divide-beige-border lg:hidden">
+			<ul class="divide-y divide-border lg:hidden">
 				{#each products as product (product.id)}
 					<li class="flex gap-3 p-4">
 						<img
 							src={product.image}
 							alt={product.name}
-							class="h-16 w-16 shrink-0 rounded-lg border border-beige-border object-cover"
+							class="h-16 w-16 shrink-0 rounded-lg border border-border object-cover"
 							loading="lazy"
 						/>
 						<div class="min-w-0 flex-1">
-							<p class="text-xs text-espresso-muted">{product.brand}</p>
+							<p class="text-xs text-muted-foreground">{product.brand}</p>
 							<a
 								href={resolve('/admin/products/[id]', { id: product.id })}
-								class="block truncate font-medium text-espresso hover:text-gold-dark"
+								class="block truncate font-medium text-foreground hover:text-gold-dark"
 							>
 								{product.name}
 							</a>
@@ -299,7 +294,7 @@
 								<StatusBadge kind="stock" value={product.stockStatus} />
 								<StatusBadge kind="visibility" value={product.visibility} />
 							</div>
-							<p class="mt-1 font-semibold text-espresso">
+							<p class="mt-1 font-semibold text-foreground">
 								{bhd(product.salePrice ?? product.price)}
 							</p>
 						</div>

@@ -1,30 +1,23 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { cn } from '$lib/utils';
+	import { cn, type WithElementRef } from "$lib/utils.js";
+	import type { HTMLAttributes } from "svelte/elements";
 
-	type Props = {
-		title: string;
-		/** Heading level, so a card header nests correctly in the page outline. */
-		level?: 2 | 3;
-		class?: string;
-		action?: Snippet;
-	};
-
-	let { title, level = 2, class: className, action }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
 <div
+	bind:this={ref}
+	data-slot="card-header"
 	class={cn(
-		'flex items-center justify-between gap-3 border-b border-beige-border px-5 py-4',
+		"gap-1 rounded-t-xl border-b px-(--card-spacing) py-4 group/card-header @container/card-header grid auto-rows-min items-center has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
 		className
 	)}
+	{...restProps}
 >
-	{#if level === 2}
-		<h2 class="font-serif text-lg font-semibold text-espresso">{title}</h2>
-	{:else}
-		<h3 class="font-serif text-lg font-semibold text-espresso">{title}</h3>
-	{/if}
-	{#if action}
-		{@render action()}
-	{/if}
+	{@render children?.()}
 </div>

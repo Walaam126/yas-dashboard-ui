@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { Select } from '$lib/components/ui/select';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { cn } from '$lib/utils';
 
 	type Props = {
@@ -34,16 +34,12 @@
 {#each filters as filter (filter.key)}
 	<div class={cn(itemClass)}>
 		<label class="sr-only" for="{idPrefix}-{filter.key}">{filter.label}</label>
-		<Select
+		<SelectField
 			id="{idPrefix}-{filter.key}"
 			value={values[filter.key] ?? 'all'}
-			onchange={(event) => onchange(filter.key, event.currentTarget.value)}
+			options={[{ value: 'all', label: `${filter.label}: All` }, ...filter.options]}
+			onValueChange={(value) => onchange(filter.key, value)}
 			class="min-w-[140px]"
-		>
-			<option value="all">{filter.label}: All</option>
-			{#each filter.options as option (option.value)}
-				<option value={option.value}>{option.label}</option>
-			{/each}
-		</Select>
+		/>
 	</div>
 {/each}

@@ -1,42 +1,49 @@
 <script lang="ts" module>
-	import type { BadgeTone } from '$lib/types';
-	import { tv } from 'tailwind-variants';
+	import { type VariantProps, tv } from "tailwind-variants";
 
 	export const badgeVariants = tv({
-		base: 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
+		base: "h-5 gap-1 rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3! focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive group/badge inline-flex w-fit shrink-0 items-center justify-center overflow-hidden whitespace-nowrap transition-colors focus-visible:ring-[3px] [&>svg]:pointer-events-none",
 		variants: {
-			tone: {
-				gold: 'bg-gold-soft text-gold-dark',
-				green: 'bg-success-soft text-success',
-				amber: 'bg-warning-soft text-warning',
-				red: 'bg-danger-soft text-danger',
-				blue: 'bg-info-soft text-info',
-				camel: 'bg-camel-light text-espresso',
-				neutral: 'bg-beige text-espresso-muted'
-			} satisfies Record<BadgeTone, string>
+			variant: {
+				default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+				secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+				destructive: "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20",
+				outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+				ghost: "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
+				link: "text-primary underline-offset-4 hover:underline",
+			},
 		},
-		defaultVariants: { tone: 'neutral' }
+		defaultVariants: {
+			variant: "default",
+		},
 	});
+
+	export type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 </script>
 
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { cn } from '$lib/utils';
+	import type { HTMLAnchorAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
 
-	type Props = {
-		tone?: BadgeTone;
-		/** Render a leading status dot so state is not communicated by colour alone. */
-		dot?: boolean;
-		class?: string;
-		children: Snippet;
-	};
-
-	let { tone = 'neutral', dot = false, class: className, children }: Props = $props();
+	let {
+		ref = $bindable(null),
+		href,
+		class: className,
+		variant = "default",
+		children,
+		...restProps
+	}: WithElementRef<HTMLAnchorAttributes> & {
+		variant?: BadgeVariant;
+	} = $props();
 </script>
 
-<span class={cn(badgeVariants({ tone }), className)}>
-	{#if dot}
-		<span class="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden="true"></span>
-	{/if}
-	{@render children()}
-</span>
+<svelte:element
+	this={href ? "a" : "span"}
+	bind:this={ref}
+	data-slot="badge"
+	{href}
+	class={cn(badgeVariants({ variant }), className)}
+	{...restProps}
+>
+	{@render children?.()}
+</svelte:element>

@@ -2,8 +2,8 @@
 	import type { DiscountFormValues } from '$lib/schemas';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { Select } from '$lib/components/ui/select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { untrack } from 'svelte';
 
@@ -16,6 +16,21 @@
 	let valueHint = $derived(
 		$values.type === 'percentage' ? 'Percentage off, e.g. 15' : 'Amount in BHD, e.g. 5.000'
 	);
+
+	const typeOptions = [
+		{ value: 'percentage', label: 'Percentage' },
+		{ value: 'fixed', label: 'Fixed Amount' },
+		{ value: 'product', label: 'Product-specific' },
+		{ value: 'category', label: 'Category' },
+		{ value: 'promo', label: 'Promo Code' }
+	];
+
+	let scopeOptions = $derived([
+		{ value: 'all', label: $values.type === 'product' ? 'All products' : 'All categories' },
+		{ value: 'Women', label: 'Women' },
+		{ value: 'Men', label: 'Men' },
+		{ value: 'Kids', label: 'Kids' }
+	]);
 </script>
 
 <div class="space-y-4">
@@ -39,13 +54,7 @@
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 		<Field id="discount-type" label="Discount type" errors={$errors.type}>
 			{#snippet control(props)}
-				<Select {...props} name="type" bind:value={$values.type}>
-					<option value="percentage">Percentage</option>
-					<option value="fixed">Fixed Amount</option>
-					<option value="product">Product-specific</option>
-					<option value="category">Category</option>
-					<option value="promo">Promo Code</option>
-				</Select>
+				<SelectField {...props} name="type" options={typeOptions} bind:value={$values.type} />
 			{/snippet}
 		</Field>
 
@@ -70,14 +79,7 @@
 			errors={$errors.scope}
 		>
 			{#snippet control(props)}
-				<Select {...props} name="scope" bind:value={$values.scope}>
-					<option value="all">
-						All {$values.type === 'product' ? 'products' : 'categories'}
-					</option>
-					<option value="Women">Women</option>
-					<option value="Men">Men</option>
-					<option value="Kids">Kids</option>
-				</Select>
+				<SelectField {...props} name="scope" options={scopeOptions} bind:value={$values.scope} />
 			{/snippet}
 		</Field>
 	{/if}
@@ -124,11 +126,11 @@
 	</div>
 
 	<div
-		class="flex items-center justify-between gap-3 rounded-lg border border-beige-border bg-cream-100 px-3 py-3"
+		class="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-3"
 	>
 		<div>
-			<p class="text-sm font-medium text-espresso">Active</p>
-			<p class="text-xs text-espresso-muted">Enable this discount immediately.</p>
+			<p class="text-sm font-medium text-foreground">Active</p>
+			<p class="text-xs text-muted-foreground">Enable this discount immediately.</p>
 		</div>
 		<Switch name="active" bind:checked={$values.active} aria-label="Active" />
 	</div>

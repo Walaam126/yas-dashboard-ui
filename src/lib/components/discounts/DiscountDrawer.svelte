@@ -36,16 +36,22 @@
 	const { enhance, submitting } = form;
 </script>
 
-<Sheet.Content {title} description="Discount details and validity window.">
-	<form id="discount-form" method="POST" action="?/save" use:enhance>
-		<DiscountFormFields {form} />
-	</form>
-	{#snippet footer()}
-		<div class="flex justify-end gap-3">
-			<Button variant="secondary" onclick={oncancel}>Cancel</Button>
-			<Button type="submit" form="discount-form" disabled={$submitting}>
-				{$submitting ? 'Saving…' : 'Save Discount'}
-			</Button>
-		</div>
-	{/snippet}
+<Sheet.Content class="bg-background gap-0 data-[side=right]:sm:max-w-xl">
+	<Sheet.Header class="bg-card shrink-0 border-b px-5 py-4">
+		<Sheet.Title class="truncate font-serif text-xl font-semibold">{title}</Sheet.Title>
+		<Sheet.Description class="text-xs">Discount details and validity window.</Sheet.Description>
+	</Sheet.Header>
+
+	<div class="flex-1 overflow-y-auto overscroll-contain p-5">
+		<form id="discount-form" method="POST" action="?/save" use:enhance>
+			<DiscountFormFields {form} />
+		</form>
+	</div>
+
+	<Sheet.Footer class="bg-card shrink-0 flex-row justify-end gap-3 border-t px-5 py-4">
+		<Button variant="outline" onclick={oncancel}>Cancel</Button>
+		<Button type="submit" form="discount-form" disabled={$submitting}>
+			{$submitting ? 'Saving…' : 'Save Discount'}
+		</Button>
+	</Sheet.Footer>
 </Sheet.Content>

@@ -63,17 +63,23 @@
 </div>
 
 <Sheet.Root bind:open={createOpen}>
-	<Sheet.Content title="Create Tour" description="Set up a new shopping trip.">
-		<form id="create-tour-form" method="POST" action="?/createTour" use:enhance>
-			<TourFormFields {form} />
-		</form>
-		{#snippet footer()}
-			<div class="flex justify-end gap-3">
-				<Button variant="secondary" onclick={() => (createOpen = false)}>Cancel</Button>
-				<Button type="submit" form="create-tour-form" disabled={$submitting}>
-					{$submitting ? 'Creating…' : 'Create Tour'}
-				</Button>
-			</div>
-		{/snippet}
+	<Sheet.Content class="bg-background gap-0 data-[side=right]:sm:max-w-xl">
+		<Sheet.Header class="bg-card shrink-0 border-b px-5 py-4">
+			<Sheet.Title class="font-serif text-xl font-semibold">Create Tour</Sheet.Title>
+			<Sheet.Description class="text-xs">Set up a new shopping trip.</Sheet.Description>
+		</Sheet.Header>
+
+		<div class="flex-1 overflow-y-auto overscroll-contain p-5">
+			<form id="create-tour-form" method="POST" action="?/createTour" use:enhance>
+				<TourFormFields {form} />
+			</form>
+		</div>
+
+		<Sheet.Footer class="bg-card shrink-0 flex-row justify-end gap-3 border-t px-5 py-4">
+			<Button variant="outline" onclick={() => (createOpen = false)}>Cancel</Button>
+			<Button type="submit" form="create-tour-form" disabled={$submitting}>
+				{$submitting ? 'Creating…' : 'Create Tour'}
+			</Button>
+		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

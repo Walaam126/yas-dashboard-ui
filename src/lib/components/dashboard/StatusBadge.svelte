@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type {
+		BadgeTone,
 		CustomerStatus,
 		DiscountStatus,
 		OrderStatus,
@@ -42,6 +43,21 @@
 	/** Kinds that render a leading dot in the original design. */
 	const DOTTED = new Set(['orderStatus', 'stock', 'tourStatus', 'discountStatus']);
 
+	/**
+	 * Status tones are a domain vocabulary rather than shadcn's semantic badge
+	 * variants — a stock level is not "secondary" or "destructive" — so the
+	 * official Badge is composed with the YAS palette instead.
+	 */
+	const toneClasses: Record<BadgeTone, string> = {
+		gold: 'bg-gold-soft text-gold-dark',
+		green: 'bg-success-soft text-success',
+		amber: 'bg-warning-soft text-warning',
+		red: 'bg-danger-soft text-danger',
+		blue: 'bg-info-soft text-info',
+		camel: 'bg-camel-light text-foreground',
+		neutral: 'bg-muted text-muted-foreground'
+	};
+
 	let meta: StatusMeta = $derived.by(() => {
 		switch (props.kind) {
 			case 'orderStatus':
@@ -64,4 +80,9 @@
 	});
 </script>
 
-<Badge tone={meta.tone} dot={DOTTED.has(props.kind)} class={props.class}>{meta.label}</Badge>
+<Badge class={[toneClasses[meta.tone], 'gap-1.5 px-2.5', props.class]}>
+	{#if DOTTED.has(props.kind)}
+		<span class="h-1.5 w-1.5 rounded-full bg-current opacity-70" aria-hidden="true"></span>
+	{/if}
+	{meta.label}
+</Badge>

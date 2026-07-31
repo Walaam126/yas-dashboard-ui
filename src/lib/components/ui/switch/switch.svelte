@@ -1,27 +1,29 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import { Switch as SwitchPrimitive } from 'bits-ui';
-
-	type Props = {
-		class?: string;
-	} & Omit<SwitchPrimitive.RootProps, 'class'>;
-
-	let { class: className, checked = $bindable(false), ...rest }: Props = $props();
+  import { Switch as SwitchPrimitive } from "bits-ui";
+  import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+  let {
+    ref = $bindable(null),
+    class: className,
+    checked = $bindable(false),
+    size = "default",
+    ...restProps
+  }: WithoutChildrenOrChild<SwitchPrimitive.RootProps> & {
+    size?: "sm" | "default";
+  } = $props();
 </script>
-
 <SwitchPrimitive.Root
-	bind:checked
-	class={cn(
-		'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50',
-		checked ? 'bg-gold' : 'bg-camel',
-		className
-	)}
-	{...rest}
+  bind:ref
+  bind:checked
+  data-slot="switch"
+  data-size={size}
+  class={cn(
+    "shrink-0 rounded-full border border-transparent shadow-xs focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:bg-primary data-unchecked:bg-input dark:data-unchecked:bg-input/80 peer group/switch relative inline-flex items-center transition-all outline-none after:absolute after:-inset-x-3 after:-inset-y-2 data-disabled:cursor-not-allowed data-disabled:opacity-50",
+    className
+  )}
+  {...restProps}
 >
-	<SwitchPrimitive.Thumb
-		class={cn(
-			'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transition-transform',
-			checked ? 'translate-x-6' : 'translate-x-1'
-		)}
-	/>
+  <SwitchPrimitive.Thumb
+    data-slot="switch-thumb"
+    class="rounded-full bg-background group-data-[size=default]/switch:size-4 group-data-[size=sm]/switch:size-3 group-data-[size=default]/switch:data-checked:translate-x-[calc(100%-2px)] group-data-[size=sm]/switch:data-checked:translate-x-[calc(100%-2px)] dark:data-checked:bg-primary-foreground group-data-[size=default]/switch:data-unchecked:translate-x-0 group-data-[size=sm]/switch:data-unchecked:translate-x-0 dark:data-unchecked:bg-foreground pointer-events-none block ring-0 transition-transform rtl:data-[state=checked]:translate-x-[calc(-100%)]"
+  />
 </SwitchPrimitive.Root>

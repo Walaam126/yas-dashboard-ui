@@ -7,7 +7,7 @@
 	let { rows = 6, cols = 5 }: Props = $props();
 </script>
 
-<div class="divide-y divide-beige-border" role="status" aria-label="Loading results">
+<div class="divide-border divide-y" role="status" aria-label="Loading results">
 	{#each { length: rows } as _, row (row)}
 		<div class="flex items-center gap-4 px-4 py-4">
 			{#each { length: cols } as _, col (col)}

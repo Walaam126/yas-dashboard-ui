@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
+	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
 
-	type Props = { class?: string } & Omit<AlertDialogPrimitive.OverlayProps, 'class'>;
-
-	let { class: className, ...rest }: Props = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: AlertDialogPrimitive.OverlayProps = $props();
 </script>
 
 <AlertDialogPrimitive.Overlay
-	class={cn(
-		'fixed inset-0 z-50 bg-espresso/40 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:animate-in data-[state=open]:fade-in',
-		className
-	)}
-	{...rest}
+	bind:ref
+	data-slot="alert-dialog-overlay"
+	class={cn("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 bg-foreground/40 duration-100 fixed inset-0 z-50", className)}
+	{...restProps}
 />

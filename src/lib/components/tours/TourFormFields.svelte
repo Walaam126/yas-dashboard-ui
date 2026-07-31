@@ -2,8 +2,8 @@
 	import type { TourFormValues } from '$lib/schemas';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import Field from '$lib/components/shared/Field.svelte';
+	import SelectField from '$lib/components/shared/SelectField.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { Select } from '$lib/components/ui/select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import PlusIcon from '@lucide/svelte/icons/plus';
@@ -51,11 +51,11 @@
 	</Field>
 
 	<div>
-		<span class="mb-1.5 block text-sm font-medium text-espresso">Cover image</span>
+		<span class="mb-1.5 block text-sm font-medium text-foreground">Cover image</span>
 		<button
 			type="button"
 			onclick={() => toast('Cover upload is not available in this mockup')}
-			class="flex h-28 w-full flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-beige-border text-espresso-muted transition-colors hover:border-gold hover:text-gold-dark"
+			class="flex h-28 w-full flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-gold-dark"
 		>
 			<PlusIcon class="h-5 w-5" aria-hidden="true" />
 			<span class="text-sm">Upload cover</span>
@@ -112,19 +112,24 @@
 
 	<Field id="tour-status" label="Status" errors={$errors.status}>
 		{#snippet control(props)}
-			<Select {...props} name="status" bind:value={$values.status}>
-				<option value="draft">Draft</option>
-				<option value="open">Open for Orders</option>
-			</Select>
+			<SelectField
+				{...props}
+				name="status"
+				options={[
+					{ value: 'draft', label: 'Draft' },
+					{ value: 'open', label: 'Open for Orders' }
+				]}
+				bind:value={$values.status}
+			/>
 		{/snippet}
 	</Field>
 
 	<div
-		class="flex items-center justify-between gap-3 rounded-lg border border-beige-border bg-cream-100 px-3 py-3"
+		class="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-3"
 	>
 		<div>
-			<p class="text-sm font-medium text-espresso">Publish tour</p>
-			<p class="text-xs text-espresso-muted">Make visible on the storefront.</p>
+			<p class="text-sm font-medium text-foreground">Publish tour</p>
+			<p class="text-xs text-muted-foreground">Make visible on the storefront.</p>
 		</div>
 		<Switch name="published" bind:checked={$values.published} aria-label="Publish tour" />
 	</div>

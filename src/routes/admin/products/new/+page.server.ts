@@ -10,7 +10,13 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async () => {
 	return {
-		form: await superValidate(emptyProductForm, zod4(productSchema)),
+		form: await superValidate(
+			emptyProductForm,
+			zod4(productSchema),
+			{
+				errors: false
+			}
+		),
 		tours,
 		galleryOptions: Object.values(IMAGES)
 	};

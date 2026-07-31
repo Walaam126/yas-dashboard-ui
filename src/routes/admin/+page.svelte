@@ -9,7 +9,7 @@
 	import PageHeader from '$lib/components/layout/PageHeader.svelte';
 	import TableSkeleton from '$lib/components/shared/TableSkeleton.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
+	import { Card, CardAction, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Table from '$lib/components/ui/table';
 	import { bhd, countdownLabel, formatDate } from '$lib/utils';
@@ -122,33 +122,36 @@
 <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 	<div class="space-y-6 lg:col-span-2">
 		<Card>
-			<CardHeader title="Recent Orders">
-				{#snippet action()}
+			<CardHeader>
+				<CardTitle level={2}>Recent Orders</CardTitle>
+				<CardAction>
 					<a
 						href={resolve('/admin/orders')}
-						class="inline-flex items-center gap-1 text-sm font-medium text-gold-dark hover:text-gold"
+						class="text-gold-dark hover:text-primary inline-flex items-center gap-1 text-sm font-medium"
 					>
 						View all
 						<ArrowRightIcon class="h-3.5 w-3.5" aria-hidden="true" />
 					</a>
-				{/snippet}
+				</CardAction>
 			</CardHeader>
 
 			{#await data.recentOrders}
 				<TableSkeleton rows={5} cols={5} />
 			{:then recentOrders}
-				<Table.Root minWidthClass="min-w-[640px]">
-					<Table.HeaderRow>
+				<Table.Root class="min-w-[640px]">
+					<Table.Header>
+					<Table.Row class="hover:bg-transparent">
 						<Table.Head class="px-5">Order</Table.Head>
 						<Table.Head>Customer</Table.Head>
 						<Table.Head>Type</Table.Head>
 						<Table.Head>Total</Table.Head>
 						<Table.Head>Status</Table.Head>
-					</Table.HeaderRow>
+					</Table.Row>
+				</Table.Header>
 					<Table.Body>
 						{#each recentOrders as order (order.id)}
 							<Table.Row>
-								<Table.Cell class="px-5 font-medium text-espresso">
+								<Table.Cell class="px-5 font-medium text-foreground">
 									<a
 										href={resolve('/admin/orders/[id]', { id: order.id })}
 										class="hover:text-gold-dark"
@@ -159,7 +162,7 @@
 								</Table.Cell>
 								<Table.Cell class="text-espresso-light">{order.customer}</Table.Cell>
 								<Table.Cell><StatusBadge kind="orderType" value={order.type} /></Table.Cell>
-								<Table.Cell class="font-medium text-espresso">{bhd(order.total)}</Table.Cell>
+								<Table.Cell class="font-medium text-foreground">{bhd(order.total)}</Table.Cell>
 								<Table.Cell><StatusBadge kind="orderStatus" value={order.status} /></Table.Cell>
 							</Table.Row>
 						{/each}
@@ -169,7 +172,7 @@
 		</Card>
 
 		<Card>
-			<CardHeader title="Sales — Last 7 Days" />
+			<CardHeader><CardTitle level={2}>Sales — Last 7 Days</CardTitle></CardHeader>
 			<CardContent>
 				{#await data.sales}
 					<Skeleton class="h-56 w-full" />
@@ -182,7 +185,7 @@
 
 	<div class="space-y-6">
 		<Card>
-			<CardHeader title="Attention Required" />
+			<CardHeader><CardTitle level={2}>Attention Required</CardTitle></CardHeader>
 			<AttentionList items={attention} />
 		</Card>
 
@@ -196,40 +199,40 @@
 						class="h-full w-full object-cover"
 						loading="lazy"
 					/>
-					<div class="absolute inset-0 bg-espresso/25" aria-hidden="true"></div>
+					<div class="absolute inset-0 bg-foreground/25" aria-hidden="true"></div>
 					<div class="absolute right-4 bottom-3 left-4">
 						<StatusBadge kind="tourStatus" value={tour.status} />
 					</div>
 				</div>
 				<CardContent>
-					<h2 class="font-serif text-lg font-semibold text-espresso">{tour.name}</h2>
-					<p class="mt-0.5 flex items-center gap-1.5 text-sm text-espresso-muted">
+					<h2 class="font-serif text-lg font-semibold text-foreground">{tour.name}</h2>
+					<p class="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
 						<MapPinIcon class="h-3.5 w-3.5" aria-hidden="true" />
 						{tour.destination}
 					</p>
 					<dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
 						<div>
-							<dt class="text-xs text-espresso-muted">Order deadline</dt>
-							<dd class="font-medium text-espresso">{formatDate(tour.orderDeadline)}</dd>
+							<dt class="text-xs text-muted-foreground">Order deadline</dt>
+							<dd class="font-medium text-foreground">{formatDate(tour.orderDeadline)}</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-espresso-muted">Tour date</dt>
-							<dd class="font-medium text-espresso">{formatDate(tour.travelDate)}</dd>
+							<dt class="text-xs text-muted-foreground">Tour date</dt>
+							<dd class="font-medium text-foreground">{formatDate(tour.travelDate)}</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-espresso-muted">Requests</dt>
-							<dd class="flex items-center gap-1 font-medium text-espresso">
-								<UsersIcon class="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+							<dt class="text-xs text-muted-foreground">Requests</dt>
+							<dd class="flex items-center gap-1 font-medium text-foreground">
+								<UsersIcon class="h-3.5 w-3.5 text-primary" aria-hidden="true" />
 								{tour.requests} submitted
 							</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-espresso-muted">Closes in</dt>
-							<dd class="font-medium text-espresso">{countdownLabel(tour.orderDeadline)}</dd>
+							<dt class="text-xs text-muted-foreground">Closes in</dt>
+							<dd class="font-medium text-foreground">{countdownLabel(tour.orderDeadline)}</dd>
 						</div>
 					</dl>
 					<Button
-						variant="secondary"
+						variant="outline"
 						href={resolve('/admin/tours/[id]', { id: tour.id })}
 						class="mt-4 w-full"
 					>
