@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { beforeNavigate, goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import CustomerSection from '$lib/components/orders/create/CustomerSection.svelte';
 	import DeliverySection from '$lib/components/orders/create/DeliverySection.svelte';
@@ -10,7 +9,6 @@
 	import PricingOptions from '$lib/components/orders/create/PricingOptions.svelte';
 	import ProductsSection from '$lib/components/orders/create/ProductsSection.svelte';
 	import SectionCard from '$lib/components/orders/create/SectionCard.svelte';
-	import ConfirmAction from '$lib/components/shared/ConfirmAction.svelte';
 	import { newOrderSchema } from '$lib/schemas';
 	import { chosenCustomer, DEFAULT_DELIVERY_FEE, nextStepMessage, orderTotals } from '$lib/utils';
 	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
@@ -21,11 +19,6 @@
 
 	let { data }: { data: PageData } = $props();
 
-	/** Set while the page itself is navigating, so the guard stays out of the way. */
-	let leaving = $state(false);
-	let leaveOpen = $state(false);
-	let pendingHref = $state('');
-
 	const form = superForm(
 		untrack(() => data.form),
 		{
@@ -33,41 +26,19 @@
 			// The order lines are a nested array, so the sheet posts as JSON.
 			dataType: 'json',
 			resetForm: false,
-			// Leaving with unsaved work is handled by this page's own dialog.
-			taintedMessage: false,
-			onSubmit: () => {
-				leaving = true;
-			},
-			onUpdated: () => {
-				leaving = false;
-			}
+			// Leaving the page is not interrupted — no browser prompt either.
+			taintedMessage: false
 		}
 	);
-	const { form: values, enhance, submitting, tainted, isTainted } = form;
+	const { form: values, enhance, submitting } = form;
 
 	let customer = $derived(chosenCustomer($values, data.customers));
 	let totals = $derived(orderTotals($values));
 	let nextStep = $derived(nextStepMessage($values));
 	let tourName = $derived(data.tours.find((tour) => tour.id === $values.tourId)?.name);
 
-	beforeNavigate((navigation) => {
-		if (leaving || navigation.type === 'leave' || !isTainted($tainted)) return;
-		if (!navigation.to) return;
-
-		navigation.cancel();
-		pendingHref = navigation.to.url.href;
-		leaveOpen = true;
-	});
-
-	function leavePage() {
-		leaving = true;
-		// eslint-disable-next-line svelte/no-navigation-without-resolve -- the cancelled navigation's own target
-		goto(pendingHref);
-	}
-
 	function saveDraft() {
 		// Mock-only: a draft is kept on the page, so the administrator can carry on.
-		tainted.set(undefined);
 		toast.success('Order saved as draft.');
 	}
 
@@ -153,13 +124,3 @@
 		</div>
 	</div>
 </form>
-
-<ConfirmAction
-	bind:open={leaveOpen}
-	destructive={false}
-	title="Leave without saving?"
-	description="The order information you entered will be lost."
-	confirmLabel="Leave Page"
-	cancelLabel="Keep Editing"
-	onconfirm={leavePage}
-/>
