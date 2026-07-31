@@ -9,7 +9,12 @@
 	let mobileNavOpen = $state(false);
 </script>
 
-<div class="flex h-screen w-full overflow-hidden bg-background">
+<!--
+	The shell is pinned to the viewport rather than sized with `h-screen`, so it
+	is out of the document flow: `main` is then the page's only scroller and no
+	second, document-level scrollbar can appear beside it.
+-->
+<div class="bg-background fixed inset-0 flex overflow-hidden">
 	<Sidebar pathname={page.url.pathname} bind:mobileOpen={mobileNavOpen} />
 
 	<div class="flex min-w-0 flex-1 flex-col">

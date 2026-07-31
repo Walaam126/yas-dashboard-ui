@@ -278,6 +278,25 @@ export function findOrder(id: string): Order | undefined {
 	return orders.find((order) => order.id === id);
 }
 
+/** `#YAS-1043` — the next number in the mock sequence. */
+export function nextOrderNumber(): string {
+	const highest = orders.reduce((top, order) => {
+		const digits = Number.parseInt(order.number.replace(/\D/g, ''), 10);
+		return Number.isNaN(digits) ? top : Math.max(top, digits);
+	}, 1000);
+	return `#YAS-${highest + 1}`;
+}
+
+/**
+ * Mock-only: a manually written order joins the in-memory catalogue so the
+ * order it produces can be opened, filtered and listed like any other. It lives
+ * as long as the server process does — nothing is persisted.
+ */
+export function addOrder(order: Order): Order {
+	orders.unshift(order);
+	return order;
+}
+
 export function ordersForCustomer(customerId: string): Order[] {
 	return orders.filter((order) => order.customerId === customerId);
 }

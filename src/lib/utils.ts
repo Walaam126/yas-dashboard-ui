@@ -19,19 +19,28 @@ export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'childre
 export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null };
 
+export type { AddressParts } from './utils/address';
+export { addressArea, formatAddress, formatBahrainPhone } from './utils/address';
 export { bhd, countdownLabel, daysUntil, formatDate, toDateInputValue } from './utils/format';
 export {
 	customerStatusMap,
+	deliveryChoiceMap,
 	deliveryMap,
 	discountStatusMap,
 	discountTypeMap,
 	orderStatusMap,
 	orderTypeMap,
 	paymentMap,
+	paymentMethodMap,
 	statusOptions,
 	stockMap,
+	timeSlotMap,
 	tourStatusMap,
 	visibilityMap
 } from './utils/labels';
 export { applyParams } from './utils/navigate';
+export type { ChosenCustomer } from './utils/order-review';
+export { chosenCustomer, nextStepMessage } from './utils/order-review';
+export type { DiscountKind, OrderTotals, OrderTotalsInput } from './utils/order-totals';
+export { DEFAULT_DELIVERY_FEE, discountAmount, orderTotals } from './utils/order-totals';
 export { activeFilterCount, param, withParams } from './utils/url-state';

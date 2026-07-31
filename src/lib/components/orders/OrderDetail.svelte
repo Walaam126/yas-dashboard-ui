@@ -179,6 +179,12 @@
 					<DetailRow label="Discount" value="− {bhd(order.discount)}" tone="green" />
 				{/if}
 				<DetailRow label="Delivery fee" value={bhd(order.deliveryFee)} />
+				{#if order.adjustment}
+					<DetailRow
+						label={order.adjustmentReason || 'Price adjustment'}
+						value="{order.adjustment > 0 ? '+' : '−'} {bhd(Math.abs(order.adjustment))}"
+					/>
+				{/if}
 				<div
 					class="flex items-center justify-between border-t border-border pt-2 text-base font-semibold text-foreground"
 				>

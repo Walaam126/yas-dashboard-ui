@@ -2,6 +2,7 @@
 	import type { FilterConfig } from '$lib/components/dashboard/FilterControls.svelte';
 	import type { Order } from '$lib/types';
 	import type { PageData } from './$types';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import FilterBar from '$lib/components/dashboard/FilterBar.svelte';
 	import TabCounters from '$lib/components/dashboard/TabCounters.svelte';
@@ -94,7 +95,7 @@
 			<DownloadIcon class="h-4 w-4" aria-hidden="true" />
 			Export
 		</Button>
-		<Button onclick={() => toast('Create order — coming soon')}>
+		<Button href={resolve('/admin/orders/new')}>
 			<PlusIcon class="h-4 w-4" aria-hidden="true" />
 			Create Order
 		</Button>

@@ -1,3 +1,4 @@
+import type { PaymentMethodValue, TimeSlotValue } from '$lib/schemas/order';
 import type {
 	CustomerStatus,
 	DeliveryMethod,
@@ -39,6 +40,28 @@ export const deliveryMap: Record<DeliveryMethod, string> = {
 	delivery: 'Delivery',
 	pickup: 'Pickup',
 	same_day: 'Same-day Delivery'
+};
+
+/** How each delivery method is offered when an order is being written up. */
+export const deliveryChoiceMap: Record<DeliveryMethod, string> = {
+	same_day: 'Same-day Delivery',
+	delivery: 'Standard Delivery',
+	pickup: 'Customer Pickup'
+};
+
+export const paymentMethodMap: Record<PaymentMethodValue, string> = {
+	benefitpay: 'BenefitPay',
+	cash: 'Cash',
+	card: 'Card',
+	transfer: 'Bank Transfer',
+	link: 'Payment Link'
+};
+
+export const timeSlotMap: Record<TimeSlotValue, string> = {
+	any: 'Any time',
+	morning: 'Morning (9am – 12pm)',
+	afternoon: 'Afternoon (12pm – 4pm)',
+	evening: 'Evening (4pm – 8pm)'
 };
 
 export const stockMap: Record<StockStatus, StatusMeta> = {

@@ -41,6 +41,9 @@ export interface Order {
 	subtotal: number;
 	discount: number;
 	deliveryFee: number;
+	/** A manual price correction, set only when one was applied. */
+	adjustment?: number;
+	adjustmentReason?: string;
 	total: number;
 	date: string;
 	customerNote?: string;

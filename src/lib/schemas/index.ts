@@ -2,6 +2,26 @@ export type { DiscountFormValues } from './discount';
 export { DISCOUNT_SCOPE_VALUES, DISCOUNT_TYPE_VALUES, discountSchema } from './discount';
 export type { NoteValues, OrderStatusUpdateValues, TourStatusUpdateValues } from './notes';
 export { noteSchema, orderStatusUpdateSchema, tourStatusUpdateSchema } from './notes';
+export type {
+	DeliveryMethodValue,
+	DiscountKindValue,
+	NewCustomerValues,
+	NewOrderValues,
+	OrderLineValues,
+	PaymentMethodValue,
+	PaymentStatusValue,
+	TimeSlotValue
+} from './order';
+export {
+	CUSTOMER_SOURCE_VALUES,
+	DELIVERY_METHOD_VALUES,
+	DISCOUNT_KIND_VALUES,
+	newOrderSchema,
+	orderLineSchema,
+	PAYMENT_METHOD_VALUES,
+	PAYMENT_STATUS_VALUES,
+	TIME_SLOT_VALUES
+} from './order';
 export type { ProductFormValues } from './product';
 export {
 	CATEGORY_VALUES,
